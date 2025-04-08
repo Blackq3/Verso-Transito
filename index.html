@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tránsito Verso</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h2 {
+      color: #6a1b9a;
+    }
+    .login-btns button {
+      background-color: #00c853;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .main-section {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, #e1f5fe, #fff);
+      position: relative;
+    }
+    .main-section h1 {
+      font-size: 36px;
+      color: #6a1b9a;
+    }
+    .search-box {
+      margin-top: 20px;
+      max-width: 600px;
+      margin-inline: auto;
+      display: flex;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+    }
+    .search-box button {
+      background-color: #00c853;
+      color: white;
+      padding: 0 20px;
+      border: none;
+      cursor: pointer;
+    }
+    .worker-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: #6a1b9a;
+      cursor: pointer;
+    }
+    .card-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 250px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h3 {
+      color: #6a1b9a;
+    }
+    .card button {
+      background-color: #00c853;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #subirMultaForm {
+      display: none;
+      background: white;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #subirMultaForm input, #subirMultaForm textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    #subirMultaForm button {
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+    #formularioCita {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 25px;
+      z-index: 9999;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+    #formularioCita input, #formularioCita textarea, #formularioCita select {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 15px;
+    }
+    #formularioCita button {
+      background-color: #6a1b9a;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f1f1f1;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Tránsito Verso</h2>
+    <div class="login-btns">
+      <button onclick="alert('Aquí irá inicio de sesión')">Ingresar</button>
+      <button onclick="alert('Aquí irá creación de cuenta')">Crear cuenta</button>
+    </div>
+  </header>
+
+  <section class="main-section">
+    <h1>Movilidad en Línea</h1>
+    <p>Consulta aquí fotodetecciones, multas y acuerdos de pago</p>
+    <div class="search-box">
+      <input type="text" placeholder="Ingresa número de identificación o placa del vehículo">
+      <button><i class="fas fa-search"></i></button>
+    </div>
+    <i class="fas fa-user-tie worker-icon" onclick="mostrarFormularioMulta()" title="Trabajador"></i>
+  </section>
+
+  <section class="card-container">
+    <div class="card">
+      <h3>Audiencias</h3>
+      <p>Información para tu audiencia</p>
+      <button>Ver más</button>
+    </div>
+    <div class="card">
+      <h3>Estado</h3>
+      <p>Consulta el estado del vehículo</p>
+      <button>Consultar</button>
+    </div>
+    <div class="card">
+      <h3>Pico y Placa</h3>
+      <p>Consulta si estás exento</p>
+      <button>Verificar</button>
+    </div>
+    <div class="card">
+      <h3>Citas</h3>
+      <p>Agenda tu cita para trámites</p>
+      <button onclick="abrirFormularioCita()">Solicitar</button>
+    </div>
+  </section>
+
+  <div id="subirMultaForm">
+    <h3>Subir Multa</h3>
+    <input type="text" id="matricula" placeholder="Matrícula del vehículo">
+    <input type="text" id="valor" placeholder="Valor de la multa">
+    <input type="text" id="razon" placeholder="Razón de la infracción">
+    <textarea id="descripcion" placeholder="Descripción detallada (opcional)"></textarea>
+    <input type="file" id="imagen" accept="image/*">
+    <button onclick="subirMulta()">Subir Multa</button>
+  </div>
+
+  <!-- Formulario de citas -->
+  <div id="formularioCita">
+    <h3>Agendar Cita</h3>
+    <form action="https://formsubmit.co/transitoverso@gmail.com" method="POST">
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" name="correo" placeholder="Tu correo electrónico" required>
+      <input type="date" name="fecha" required>
+      <select name="hora" required>
+        <option value="">Selecciona una hora</option>
+        <option value="08:00 AM">08:00 AM</option>
+        <option value="09:00 AM">09:00 AM</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <option value="11:00 AM">11:00 AM</option>
+        <option value="02:00 PM">02:00 PM</option>
+        <option value="03:00 PM">03:00 PM</option>
+        <option value="04:00 PM">04:00 PM</option>
+      </select>
+      <textarea name="motivo" placeholder="Motivo de la cita" required></textarea>
+      <input type="hidden" name="_captcha" value="false">
+      <button type="submit">Enviar</button>
+      <button type="button" onclick="cerrarFormularioCita()">Cancelar</button>
+    </form>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_DOMINIO.firebaseapp.com",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_BUCKET.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    window.mostrarFormularioMulta = function () {
+      const pass = prompt("Ingrese la contraseña de trabajador:");
+      if (pass === "verso11") {
+        document.getElementById("subirMultaForm").style.display = "block";
+        alert("Bienvenido agente. Estás de servicio.");
+      } else {
+        alert("Contraseña incorrecta.");
+      }
+    }
+
+    window.subirMulta = async function () {
+      const matricula = document.getElementById("matricula").value.trim();
+      const valor = document.getElementById("valor").value.trim();
+      const razon = document.getElementById("razon").value.trim();
+      const descripcion = document.getElementById("descripcion").value.trim();
+      const imagenInput = document.getElementById("imagen");
+      const imagenFile = imagenInput.files[0];
+
+      if (!matricula || !valor || !razon || !imagenFile) {
+        alert("Por favor completa todos los campos y selecciona una imagen.");
+        return;
+      }
+
+      try {
+        const storageRef = ref(storage, 'multas/' + Date.now() + '_' + imagenFile.name);
+        const snapshot = await uploadBytes(storageRef, imagenFile);
+        const url = await getDownloadURL(snapshot.ref);
+
+        await addDoc(collection(db, "multas"), {
+          matricula,
+          valor,
+          razon,
+          descripcion,
+          imagenURL: url,
+          fecha: new Date()
+        });
+
+        alert("Multa subida correctamente.");
+        document.getElementById("subirMultaForm").reset();
+        document.getElementById("subirMultaForm").style.display = "none";
+
+      } catch (error) {
+        console.error("Error al subir la multa:", error);
+        alert("Hubo un error al subir la multa.");
+      }
+    }
+
+    window.abrirFormularioCita = function () {
+      document.getElementById("formularioCita").style.display = "block";
+    }
+
+    window.cerrarFormularioCita = function () {
+      document.getElementById("formularioCita").style.display = "none";
+    }
+  </script>
+</body>
+</html>
