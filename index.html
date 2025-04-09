@@ -106,26 +106,36 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    #panelTrabajador input, #panelTrabajador textarea {
+    #panelTrabajador input,
+    #panelTrabajador textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       font-size: 16px;
+      box-sizing: border-box;
     }
     #panelTrabajador button {
       background-color: #6a1b9a;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       border-radius: 5px;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
     }
-    #resultadoMulta {
-      max-width: 600px;
-      margin: 40px auto;
-      background: white;
+    #resultadosMultas {
+      max-width: 700px;
+      margin: 30px auto;
       padding: 20px;
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #resultadosMultas img {
+      max-width: 100%;
+      margin-top: 10px;
     }
     footer {
       text-align: center;
@@ -148,45 +158,29 @@
     <h1>Movilidad en Línea</h1>
     <p>Consulta aquí fotodetecciones, multas y acuerdos de pago</p>
     <div class="search-box">
-      <input type="text" id="busquedaMatricula" placeholder="Ingresa placa del vehículo">
+      <input type="text" id="busquedaMatricula" placeholder="Ingresa número de matrícula del vehículo">
       <button onclick="buscarMulta()"><i class="fas fa-search"></i></button>
     </div>
-    <i class="fas fa-user-tie worker-icon" onclick="mostrarPanelTrabajador()" title="Trabajador"></i>
-  </section>
-
-  <section class="card-container">
-    <div class="card">
-      <h3>Audiencias</h3>
-      <p>Consulta fecha y hora de tu audiencia de tránsito</p>
-      <button onclick="alert('Módulo en desarrollo')">Ver más</button>
-    </div>
-    <div class="card">
-      <h3>Estado</h3>
-      <p>Consulta el estado actual de tu vehículo</p>
-      <button onclick="alert('Módulo en desarrollo')">Consultar</button>
-    </div>
-    <div class="card">
-      <h3>Pico y Placa</h3>
-      <p>Verifica si tu vehículo puede circular</p>
-      <button onclick="alert('Módulo en desarrollo')">Verificar</button>
-    </div>
+    <i class="fas fa-user-tie worker-icon" onclick="accederPanelTrabajador()" title="Panel de trabajador"></i>
   </section>
 
   <div id="panelTrabajador">
-    <h3>Panel del Trabajador</h3>
+    <h3>Subida exclusiva de multas para trabajadores</h3>
     <input type="text" id="matricula" placeholder="Matrícula del vehículo">
     <input type="text" id="valor" placeholder="Valor de la multa">
     <input type="text" id="razon" placeholder="Razón de la infracción">
+    <textarea id="descripcion" placeholder="Descripción detallada (opcional)"></textarea>
     <input type="file" id="imagen" accept="image/*">
     <button onclick="subirMulta()">Subir Multa</button>
   </div>
 
-  <div id="resultadoMulta"></div>
+  <div id="resultadosMultas"></div>
 
   <footer>
     <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
   </footer>
 
+  <!-- Firebase y JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
@@ -198,32 +192,33 @@
       projectId: "transito-verso-517a0",
       storageBucket: "transito-verso-517a0.appspot.com",
       messagingSenderId: "1055859388199",
-      appId: "1:1055859388199:web:ee4da62ab82663ef414302",
-      measurementId: "G-LY1HX0QBCV"
+      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    window.mostrarPanelTrabajador = function () {
+    window.accederPanelTrabajador = function () {
       const pass = prompt("Ingrese la contraseña de trabajador:");
       if (pass === "verso11") {
         document.getElementById("panelTrabajador").style.display = "block";
+        alert("Bienvenido agente. Estás de servicio.");
       } else {
         alert("Contraseña incorrecta.");
       }
-    }
+    };
 
     window.subirMulta = async function () {
       const matricula = document.getElementById("matricula").value.trim();
       const valor = document.getElementById("valor").value.trim();
       const razon = document.getElementById("razon").value.trim();
+      const descripcion = document.getElementById("descripcion").value.trim();
       const imagenInput = document.getElementById("imagen");
       const imagenFile = imagenInput.files[0];
 
       if (!matricula || !valor || !razon || !imagenFile) {
-        alert("Por favor completa todos los campos y selecciona una imagen.");
+        alert("Completa todos los campos y selecciona una imagen.");
         return;
       }
 
@@ -236,49 +231,53 @@
           matricula,
           valor,
           razon,
+          descripcion,
           imagenURL: url,
-          fecha: new Date()
+          fecha: new Date().toISOString()
         });
 
         alert("Multa subida correctamente.");
         document.getElementById("panelTrabajador").reset();
       } catch (error) {
         console.error("Error al subir la multa:", error);
-        alert("Error al subir la multa.");
+        alert("Hubo un error al subir la multa.");
       }
     }
 
     window.buscarMulta = async function () {
-      const input = document.getElementById("busquedaMatricula").value.trim();
-      const resultado = document.getElementById("resultadoMulta");
-      resultado.innerHTML = "";
+      const matricula = document.getElementById("busquedaMatricula").value.trim();
+      const contenedor = document.getElementById("resultadosMultas");
+      contenedor.innerHTML = "";
 
-      if (!input) {
+      if (!matricula) {
         alert("Ingresa una matrícula para buscar.");
         return;
       }
 
       const multasRef = collection(db, "multas");
-      const q = query(multasRef, where("matricula", "==", input));
+      const q = query(multasRef, where("matricula", "==", matricula));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        resultado.innerHTML = `<p>No se encontraron multas para la matrícula <strong>${input}</strong>.</p>`;
+        contenedor.innerHTML = "<p>No se encontraron multas para esta matrícula.</p>";
         return;
       }
 
-      querySnapshot.forEach((doc) => {
+      querySnapshot.forEach(doc => {
         const data = doc.data();
-        resultado.innerHTML += `
-          <div style="margin-top: 20px;">
-            <img src="${data.imagenURL}" alt="Foto multa" style="max-width: 100%; border-radius: 10px;">
+        contenedor.innerHTML += `
+          <div>
+            <h3>Multa para matrícula: ${data.matricula}</h3>
             <p><strong>Valor:</strong> $${data.valor}</p>
             <p><strong>Razón:</strong> ${data.razon}</p>
-            <p><strong>Fecha:</strong> ${new Date(data.fecha.seconds * 1000).toLocaleString()}</p>
-          </div>
+            <p><strong>Descripción:</strong> ${data.descripcion || "Sin descripción"}</p>
+            <p><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleString()}</p>
+            <img src="${data.imagenURL}" alt="Imagen de la multa">
+          </div><hr>
         `;
       });
-    }
+    };
   </script>
 </body>
 </html>
+
