@@ -1,174 +1,144 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tránsito Verso</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tránsito Verso - Multas</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a1a2f;
+      color: #ffffff;
+    }
+    header {
+      background-color: #06121e;
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      color: #00c3ff;
+    }
+    .buscador {
+      padding: 40px;
+      text-align: center;
+    }
+    .buscador input {
+      padding: 12px;
+      width: 300px;
+      border: none;
+      border-radius: 5px;
+    }
+    .buscador button {
+      padding: 12px 20px;
+      background-color: #00c3ff;
+      border: none;
+      color: white;
+      margin-left: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .resultado {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tarjeta {
+      background-color: #122b45;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .tarjeta img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .tuerca {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #00c3ff;
+      border: none;
+      color: white;
+      font-size: 20px;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-  <!-- BLOQUEO POR CONTRASEÑA -->
-  <div id="bloqueo" class="fixed inset-0 bg-white flex flex-col items-center justify-center text-center z-50">
-    <h1 class="text-4xl font-bold text-red-600 mb-6">🚧 EN ACTUALIZACIÓN 🚧</h1>
-    <p class="mb-4 text-lg text-gray-700">Ingresa la contraseña si eres desarrollador</p>
-    <input type="password" id="claveAcceso" placeholder="Contraseña" class="px-4 py-2 border rounded mb-4">
-    <button onclick="desbloquearSitio()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Acceder</button>
-  </div>
+<header>
+  <h1>Tránsito Verso</h1>
+</header>
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <div id="contenidoPrincipal" class="hidden">
+<div class="buscador">
+  <input type="text" id="matriculaBuscada" placeholder="Ingresa tu matrícula...">
+  <button onclick="buscarMultas()">Buscar Multas</button>
+</div>
 
-    <!-- HEADER -->
-    <header class="bg-white shadow-md p-4 flex items-center justify-between">
-      <div class="flex items-center space-x-4">
-        <img src="https://i.imgur.com/JI7EkFp.png" alt="Logo Tránsito Verso" class="h-12">
-        <h1 class="text-xl font-bold text-green-600">Tránsito Verso</h1>
-      </div>
-      <div class="space-x-2">
-        <button class="bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-100">Ingresar</button>
-        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Crear cuenta</button>
-      </div>
-    </header>
+<div class="resultado" id="resultado"></div>
 
-    <!-- MAIN -->
-    <main class="max-w-6xl mx-auto px-4 py-8">
+<!-- Botón tuerca -->
+<button class="tuerca" onclick="solicitarContraseña()">⚙️</button>
 
-      <!-- TÍTULO Y BUSCADOR -->
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-purple-700">Movilidad en Línea</h2>
-        <p class="text-gray-600 mt-2">Consulta aquí tus fotodetecciones, multas y acuerdos de pago</p>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-        <div class="mt-6 flex justify-center">
-          <input id="searchInput" type="text" placeholder="Ingresa la placa del vehículo" class="w-full max-w-xl px-4 py-2 border rounded-l-md">
-          <button onclick="buscarMulta()" class="bg-green-500 px-4 rounded-r-md text-white hover:bg-green-600">🔍</button>
-        </div>
-      </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDKFPYr7QBdgf2E61NNvPnpz8ENu39Vowo",
+    authDomain: "transito-verso-517a0.firebaseapp.com",
+    projectId: "transito-verso-517a0",
+    storageBucket: "transito-verso-517a0.appspot.com",
+    messagingSenderId: "1055859388199",
+    appId: "1:1055859388199:web:ee4da62ab82663ef414302"
+  };
 
-      <!-- TARJETAS -->
-      <div class="grid md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-          <h3 class="text-purple-700 font-semibold text-lg mb-2">Consultar</h3>
-          <p class="text-sm text-gray-600 mb-4">El estado del vehículo</p>
-          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar estado</button>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-          <h3 class="text-purple-700 font-semibold text-lg mb-2">Exentos</h3>
-          <p class="text-sm text-gray-600 mb-4">Pico y placa</p>
-          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar exentos</button>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-          <h3 class="text-purple-700 font-semibold text-lg mb-2">Solicita aquí</h3>
-          <p class="text-sm text-gray-600 mb-4">Citas para tu trámite</p>
-          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Solicitar cita</button>
-        </div>
-      </div>
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-      <!-- RESULTADO -->
-      <div id="resultado" class="hidden bg-white p-4 rounded shadow mb-6"></div>
+  async function buscarMultas() {
+    const matricula = document.getElementById("matriculaBuscada").value.trim();
+    const resultado = document.getElementById("resultado");
+    resultado.innerHTML = "<p>Buscando multas...</p>";
 
-      <!-- BOTÓN TRABAJADOR -->
-      <div class="flex justify-end mb-4">
-        <button onclick="mostrarFormularioTrabajador()" class="text-white bg-gray-700 hover:bg-gray-800 p-2 rounded-full">👷</button>
-      </div>
+    const q = query(collection(db, "multas"), where("matricula", "==", matricula));
+    const querySnapshot = await getDocs(q);
 
-      <!-- FORMULARIO TRABAJADOR -->
-      <div id="formularioTrabajador" class="hidden bg-white p-6 rounded shadow-md space-y-4">
-        <input type="password" id="claveTrabajador" placeholder="Ingrese clave de trabajador" class="border px-4 py-2 rounded w-full">
-        <div id="contenidoTrabajador" class="hidden space-y-4">
-          <input type="text" id="matricula" placeholder="Matrícula" class="border px-4 py-2 rounded w-full">
-          <input type="text" id="valor" placeholder="Valor de la multa" class="border px-4 py-2 rounded w-full">
-          <input type="text" id="razon" placeholder="Razón de la multa" class="border px-4 py-2 rounded w-full">
-          <input type="file" id="imagen" class="w-full">
-          <button onclick="subirMulta()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Subir multa</button>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-white p-4 border-t text-center text-sm text-gray-500">
-      © 2025 Tránsito Verso — Todos los derechos reservados
-    </footer>
-  </div>
-
-  <!-- SCRIPTS -->
-  <script>
-    const firebaseConfig = {
-      projectId: "transito-verso-517a0",
-      authDomain: "transito-verso-517a0.firebaseapp.com",
-      storageBucket: "transito-verso-517a0.appspot.com",
-      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    function desbloquearSitio() {
-      const clave = document.getElementById("claveAcceso").value;
-      if (clave === "daniel1") {
-        document.getElementById("bloqueo").classList.add("hidden");
-        document.getElementById("contenidoPrincipal").classList.remove("hidden");
-      } else {
-        alert("Contraseña incorrecta.");
-      }
-    }
-
-    function mostrarFormularioTrabajador() {
-      const clave = prompt("Ingrese la clave de trabajador:");
-      if (clave === "verso11") {
-        document.getElementById("formularioTrabajador").classList.remove("hidden");
-        document.getElementById("contenidoTrabajador").classList.remove("hidden");
-      } else {
-        alert("Clave incorrecta.");
-      }
-    }
-
-    async function subirMulta() {
-      const matricula = document.getElementById("matricula").value;
-      const valor = document.getElementById("valor").value;
-      const razon = document.getElementById("razon").value;
-      const imagen = document.getElementById("imagen").files[0];
-
-      if (!matricula || !valor || !razon || !imagen) {
-        alert("Por favor llena todos los campos.");
-        return;
-      }
-
-      const ref = storage.ref().child(`multas/${matricula}-${Date.now()}`);
-      await ref.put(imagen);
-      const url = await ref.getDownloadURL();
-
-      await db.collection("multas").doc(matricula).set({
-        valor,
-        razon,
-        imagen: url
-      });
-
-      alert("Multa subida correctamente.");
-    }
-
-    async function buscarMulta() {
-      const placa = document.getElementById("searchInput").value;
-      const doc = await db.collection("multas").doc(placa).get();
-      const resultado = document.getElementById("resultado");
-      if (doc.exists) {
-        const datos = doc.data();
-        resultado.innerHTML = `
-          <h3 class="font-bold text-lg mb-2">Multa para placa: ${placa}</h3>
-          <img src="${datos.imagen}" alt="Imagen multa" class="h-48 mb-2">
-          <p><strong>Valor:</strong> ${datos.valor}</p>
-          <p><strong>Razón:</strong> ${datos.razon}</p>
+    if (querySnapshot.empty) {
+      resultado.innerHTML = "<p>No se encontraron multas.</p>";
+    } else {
+      resultado.innerHTML = "";
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const tarjeta = `
+          <div class="tarjeta">
+            <h3>Matrícula: ${data.matricula}</h3>
+            <p>Valor: ${data.valor}</p>
+            <p>Razón: ${data.razon}</p>
+            <img src="${data.imagenURL}" alt="Imagen de la multa">
+          </div>
         `;
-      } else {
-        resultado.innerHTML = `<p>No se encontró multa para esta placa.</p>`;
-      }
-      resultado.classList.remove("hidden");
+        resultado.innerHTML += tarjeta;
+      });
     }
-  </script>
+  }
+
+  window.buscarMultas = buscarMultas;
+
+  window.solicitarContraseña = function() {
+    const pass = prompt("Ingresa la contraseña de trabajador:");
+    if (pass === "verso11") {
+      window.location.href = "formulario.html";
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
+</script>
+
 </body>
 </html>
