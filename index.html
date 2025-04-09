@@ -3,142 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tránsito Verso - Multas</title>
+  <title>Secretaría de Tránsito - Inicio</title>
   <style>
+    /* Estilos generales */
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0a1a2f;
-      color: #ffffff;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
     }
     header {
-      background-color: #06121e;
-      padding: 20px;
+      background-color: #005bac;
+      color: #fff;
+      padding: 10px 0;
       text-align: center;
     }
-    header h1 {
-      margin: 0;
-      color: #00c3ff;
+    nav {
+      background-color: #003d7a;
+      padding: 10px 0;
     }
-    .buscador {
-      padding: 40px;
+    nav ul {
+      list-style: none;
+      padding: 0;
       text-align: center;
     }
-    .buscador input {
-      padding: 12px;
-      width: 300px;
-      border: none;
-      border-radius: 5px;
+    nav ul li {
+      display: inline;
+      margin: 0 15px;
     }
-    .buscador button {
-      padding: 12px 20px;
-      background-color: #00c3ff;
-      border: none;
-      color: white;
-      margin-left: 10px;
-      border-radius: 5px;
-      cursor: pointer;
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
     }
-    .resultado {
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
+    .container {
+      width: 80%;
+      margin: 20px auto;
     }
-    .tarjeta {
-      background-color: #122b45;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    footer {
+      background-color: #003d7a;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      position: relative;
+      bottom: 0;
+      width: 100%;
     }
-    .tarjeta img {
-      max-width: 100%;
-      border-radius: 10px;
+    /* Estilos específicos */
+    .search-box {
+      text-align: center;
+      margin: 20px 0;
     }
-    .tuerca {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #00c3ff;
-      border: none;
-      color: white;
-      font-size: 20px;
-      border-radius: 50%;
+    .search-box input[type="text"] {
       padding: 10px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .search-box button {
+      padding: 10px 20px;
+      background-color: #005bac;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+    }
+    .search-box button:hover {
+      background-color: #003d7a;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Tránsito Verso</h1>
+  <h1>Secretaría de Tránsito</h1>
 </header>
 
-<div class="buscador">
-  <input type="text" id="matriculaBuscada" placeholder="Ingresa tu matrícula...">
-  <button onclick="buscarMultas()">Buscar Multas</button>
+<nav>
+  <ul>
+    <li><a href="#">Inicio</a></li>
+    <li><a href="#">Servicios</a></li>
+    <li><a href="#">Trámites</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <section class="search-box">
+    <h2>Consulta de Multas por Matrícula</h2>
+    <input type="text" placeholder="Ingrese la matrícula del vehículo">
+    <button>Buscar</button>
+  </section>
+
+  <section>
+    <h2>Últimas Noticias</h2>
+    <p>Aquí puedes agregar las últimas noticias relacionadas con tránsito y transporte.</p>
+  </section>
 </div>
 
-<div class="resultado" id="resultado"></div>
-
-<!-- Botón tuerca -->
-<button class="tuerca" onclick="solicitarContraseña()">⚙️</button>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDKFPYr7QBdgf2E61NNvPnpz8ENu39Vowo",
-    authDomain: "transito-verso-517a0.firebaseapp.com",
-    projectId: "transito-verso-517a0",
-    storageBucket: "transito-verso-517a0.appspot.com",
-    messagingSenderId: "1055859388199",
-    appId: "1:1055859388199:web:ee4da62ab82663ef414302"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  async function buscarMultas() {
-    const matricula = document.getElementById("matriculaBuscada").value.trim();
-    const resultado = document.getElementById("resultado");
-    resultado.innerHTML = "<p>Buscando multas...</p>";
-
-    const q = query(collection(db, "multas"), where("matricula", "==", matricula));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      resultado.innerHTML = "<p>No se encontraron multas.</p>";
-    } else {
-      resultado.innerHTML = "";
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const tarjeta = `
-          <div class="tarjeta">
-            <h3>Matrícula: ${data.matricula}</h3>
-            <p>Valor: ${data.valor}</p>
-            <p>Razón: ${data.razon}</p>
-            <img src="${data.imagenURL}" alt="Imagen de la multa">
-          </div>
-        `;
-        resultado.innerHTML += tarjeta;
-      });
-    }
-  }
-
-  window.buscarMultas = buscarMultas;
-
-  window.solicitarContraseña = function() {
-    const pass = prompt("Ingresa la contraseña de trabajador:");
-    if (pass === "verso11") {
-      window.location.href = "formulario.html";
-    } else {
-      alert("Contraseña incorrecta.");
-    }
-  }
-</script>
+<footer>
+  <p>Contacto: Calle 123 #45-67, Ciudad. Teléfono: (1) 234 5678. Correo: contacto@transito.gov.co</p>
+</footer>
 
 </body>
 </html>
