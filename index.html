@@ -97,6 +97,21 @@
       margin-top: 10px;
       cursor: pointer;
     }
+    #infoExtra {
+      max-width: 800px;
+      margin: 0 auto 40px auto;
+      padding: 20px;
+      display: none;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #infoExtra h3 {
+      color: #6a1b9a;
+    }
+    #infoExtra p {
+      font-size: 16px;
+    }
     #subirMultaForm {
       display: none;
       background: white;
@@ -178,24 +193,29 @@
   <section class="card-container">
     <div class="card">
       <h3>Audiencias</h3>
-      <p>Solicita y gestiona audiencias virtuales para defenderte ante sanciones impuestas en el servidor. Cumple el debido proceso dentro del rol.</p>
-      <button>Solicitar audiencia</button>
+      <p>Información para tu audiencia</p>
+      <button onclick="mostrarInfo('Audiencias', 'Las audiencias permiten a los jugadores presentar su defensa ante sanciones. Estas se solicitan dentro del centro de control en el servidor, y son atendidas por personal del staff en días y horas programadas.')">Solicitar audiencia</button>
     </div>
     <div class="card">
       <h3>Estado</h3>
-      <p>Consulta el historial de tu vehículo en el servidor: infracciones activas, pagos pendientes, y anotaciones en el sistema del Tránsito Verso.</p>
-      <button>Consultar estado</button>
+      <p>Consulta el estado del vehículo</p>
+      <button onclick="mostrarInfo('Estado del Vehículo', 'Consulta si tu vehículo tiene multas pendientes, anotaciones por infracciones o reportes de agentes. El historial de tu vehículo es clave para evitar sanciones y mantenerlo en regla.')">Consultar estado</button>
     </div>
     <div class="card">
       <h3>Pico y Placa</h3>
-      <p>Verifica si tu vehículo puede circular hoy en la ciudad virtual según el sistema de rotación vial y restricciones horarias.</p>
-      <button>Verificar restricción</button>
+      <p>Consulta si estás exento</p>
+      <button onclick="mostrarInfo('Pico y Placa', 'El sistema de pico y placa regula la movilidad en el servidor. Se basa en el último número de la matrícula. Consulta aquí si tu vehículo tiene restricción hoy y evita sanciones automáticas.')">Verificar restricción</button>
     </div>
     <div class="card">
       <h3>Citas</h3>
       <p>Agenda tu cita para trámites</p>
       <button onclick="abrirFormularioCita()">Solicitar</button>
     </div>
+  </section>
+
+  <section id="infoExtra">
+    <h3 id="tituloInfo"></h3>
+    <p id="contenidoInfo"></p>
   </section>
 
   <div id="subirMultaForm">
@@ -208,7 +228,6 @@
     <button onclick="subirMulta()">Subir Multa</button>
   </div>
 
-  <!-- Formulario de citas -->
   <div id="formularioCita">
     <h3>Agendar Cita</h3>
     <form action="https://formsubmit.co/transitoverso@gmail.com" method="POST">
@@ -308,7 +327,14 @@
     window.cerrarFormularioCita = function () {
       document.getElementById("formularioCita").style.display = "none";
     }
+
+    window.mostrarInfo = function (titulo, contenido) {
+      document.getElementById("tituloInfo").textContent = titulo;
+      document.getElementById("contenidoInfo").textContent = contenido;
+      document.getElementById("infoExtra").style.display = "block";
+    }
   </script>
 </body>
 </html>
+
 
