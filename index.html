@@ -97,28 +97,64 @@
       margin-top: 10px;
       cursor: pointer;
     }
-    #subirMultaForm, #subirMultaFormExclusivo {
+    #formularioCita {
       display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
       background: white;
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
+      padding: 25px;
+      z-index: 9999;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 90%;
     }
-    #subirMultaForm input, #subirMultaForm textarea,
-    #subirMultaFormExclusivo input, #subirMultaFormExclusivo textarea {
+    #formularioCita input, #formularioCita textarea, #formularioCita select {
       width: 100%;
-      padding: 10px;
       margin-bottom: 10px;
-      font-size: 16px;
+      padding: 10px;
+      font-size: 15px;
     }
-    #subirMultaForm button, #subirMultaFormExclusivo button {
+    #formularioCita button {
       background-color: #6a1b9a;
       color: white;
+      padding: 10px;
       border: none;
-      padding: 10px 20px;
       border-radius: 5px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    #panelTrabajador {
+      display: none;
+      background: white;
+      padding: 30px;
+      max-width: 600px;
+      margin: 40px auto;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    #panelTrabajador h3 {
+      color: #6a1b9a;
+      margin-bottom: 20px;
+    }
+    #panelTrabajador input, #panelTrabajador textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    #panelTrabajador button {
+      background-color: #6a1b9a;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
     }
     footer {
       text-align: center;
@@ -141,37 +177,37 @@
     <h1>Movilidad en Línea</h1>
     <p>Consulta aquí fotodetecciones, multas y acuerdos de pago</p>
     <div class="search-box">
-      <input type="text" id="busquedaMatricula" placeholder="Ingresa número de identificación o placa del vehículo">
-      <button onclick="buscarMulta()"><i class="fas fa-search"></i></button>
+      <input type="text" placeholder="Ingresa número de identificación o placa del vehículo">
+      <button><i class="fas fa-search"></i></button>
     </div>
-    <i class="fas fa-user-tie worker-icon" onclick="mostrarFormularioMulta()" title="Trabajador"></i>
+    <i class="fas fa-user-tie worker-icon" onclick="mostrarPanelTrabajador()" title="Trabajador"></i>
   </section>
 
   <section class="card-container">
     <div class="card">
       <h3>Audiencias</h3>
-      <p>Información sobre procesos de fotodetección y comparendos</p>
-      <button onclick="alert('Aquí se mostrará información profesional sobre audiencias')">Ver más</button>
+      <p>Información para tu audiencia</p>
+      <button onclick="alert('Aquí irá la información de audiencias')">Ver más</button>
     </div>
     <div class="card">
       <h3>Estado</h3>
-      <p>Consulta el estado legal y técnico de tu vehículo</p>
-      <button onclick="alert('Aquí se mostrará información profesional sobre el estado del vehículo')">Consultar</button>
+      <p>Consulta el estado del vehículo</p>
+      <button onclick="alert('Aquí irá el estado del vehículo')">Consultar</button>
     </div>
     <div class="card">
       <h3>Pico y Placa</h3>
-      <p>Verifica si tu vehículo puede circular hoy</p>
-      <button onclick="alert('Aquí se mostrará el calendario actualizado de pico y placa')">Verificar</button>
+      <p>Consulta si estás exento</p>
+      <button onclick="alert('Aquí se mostrará la exención de Pico y Placa')">Verificar</button>
     </div>
     <div class="card">
       <h3>Citas</h3>
       <p>Agenda tu cita para trámites</p>
-      <button onclick="alert('Aquí irá agendamiento de citas con formulario')">Solicitar</button>
+      <button onclick="abrirFormularioCita()">Solicitar</button>
     </div>
   </section>
 
-  <div id="subirMultaForm">
-    <h3>Subir Multa</h3>
+  <div id="panelTrabajador">
+    <h3>Panel exclusivo de trabajadores</h3>
     <input type="text" id="matricula" placeholder="Matrícula del vehículo">
     <input type="text" id="valor" placeholder="Valor de la multa">
     <input type="text" id="razon" placeholder="Razón de la infracción">
@@ -180,15 +216,27 @@
     <button onclick="subirMulta()">Subir Multa</button>
   </div>
 
-  <!-- Apartado exclusivo para trabajadores -->
-  <div id="subirMultaFormExclusivo">
-    <h3>Multas - Panel Exclusivo de Agentes</h3>
-    <input type="text" id="matriculaEx" placeholder="Matrícula del vehículo">
-    <input type="text" id="valorEx" placeholder="Valor de la multa">
-    <input type="text" id="razonEx" placeholder="Razón de la infracción">
-    <textarea id="descripcionEx" placeholder="Descripción detallada (opcional)"></textarea>
-    <input type="file" id="imagenEx" accept="image/*">
-    <button onclick="subirMultaExclusivo()">Subir Multa (Exclusivo)</button>
+  <div id="formularioCita">
+    <h3>Agendar Cita</h3>
+    <form action="https://formsubmit.co/transitoverso@gmail.com" method="POST">
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" name="correo" placeholder="Tu correo electrónico" required>
+      <input type="date" name="fecha" required>
+      <select name="hora" required>
+        <option value="">Selecciona una hora</option>
+        <option value="08:00 AM">08:00 AM</option>
+        <option value="09:00 AM">09:00 AM</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <option value="11:00 AM">11:00 AM</option>
+        <option value="02:00 PM">02:00 PM</option>
+        <option value="03:00 PM">03:00 PM</option>
+        <option value="04:00 PM">04:00 PM</option>
+      </select>
+      <textarea name="motivo" placeholder="Motivo de la cita" required></textarea>
+      <input type="hidden" name="_captcha" value="false">
+      <button type="submit">Enviar</button>
+      <button type="button" onclick="cerrarFormularioCita()">Cancelar</button>
+    </form>
   </div>
 
   <footer>
@@ -197,7 +245,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
     const firebaseConfig = {
@@ -213,24 +261,35 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    window.mostrarFormularioMulta = function () {
+    window.mostrarPanelTrabajador = function () {
       const pass = prompt("Ingrese la contraseña de trabajador:");
       if (pass === "verso11") {
-        document.getElementById("subirMultaForm").style.display = "block";
-        document.getElementById("subirMultaFormExclusivo").style.display = "block";
-        alert("Bienvenido agente. Estás en el panel exclusivo de trabajadores.");
+        document.getElementById("panelTrabajador").style.display = "block";
+        alert("Bienvenido agente. Acceso concedido al panel de trabajador.");
       } else {
         alert("Contraseña incorrecta.");
       }
     }
 
-    async function guardarMulta(matricula, valor, razon, descripcion, imagenFile, esExclusivo = false) {
+    window.subirMulta = async function () {
+      const matricula = document.getElementById("matricula").value.trim();
+      const valor = document.getElementById("valor").value.trim();
+      const razon = document.getElementById("razon").value.trim();
+      const descripcion = document.getElementById("descripcion").value.trim();
+      const imagenInput = document.getElementById("imagen");
+      const imagenFile = imagenInput.files[0];
+
+      if (!matricula || !valor || !razon || !imagenFile) {
+        alert("Por favor completa todos los campos y selecciona una imagen.");
+        return;
+      }
+
       try {
         const storageRef = ref(storage, 'multas/' + Date.now() + '_' + imagenFile.name);
         const snapshot = await uploadBytes(storageRef, imagenFile);
         const url = await getDownloadURL(snapshot.ref);
 
-        await addDoc(collection(db, esExclusivo ? "multasExclusivas" : "multas"), {
+        await addDoc(collection(db, "multas"), {
           matricula,
           valor,
           razon,
@@ -240,12 +299,8 @@
         });
 
         alert("Multa subida correctamente.");
-        if (!esExclusivo) {
-          document.getElementById("subirMultaForm").reset();
-          document.getElementById("subirMultaForm").style.display = "none";
-        } else {
-          document.getElementById("subirMultaFormExclusivo").reset();
-        }
+        document.getElementById("panelTrabajador").reset();
+        document.getElementById("panelTrabajador").style.display = "none";
 
       } catch (error) {
         console.error("Error al subir la multa:", error);
@@ -253,43 +308,13 @@
       }
     }
 
-    window.subirMulta = () => {
-      const m = document.getElementById("matricula").value.trim();
-      const v = document.getElementById("valor").value.trim();
-      const r = document.getElementById("razon").value.trim();
-      const d = document.getElementById("descripcion").value.trim();
-      const f = document.getElementById("imagen").files[0];
-      if (!m || !v || !r || !f) return alert("Completa todos los campos e imagen");
-      guardarMulta(m, v, r, d, f);
+    window.abrirFormularioCita = function () {
+      document.getElementById("formularioCita").style.display = "block";
     }
 
-    window.subirMultaExclusivo = () => {
-      const m = document.getElementById("matriculaEx").value.trim();
-      const v = document.getElementById("valorEx").value.trim();
-      const r = document.getElementById("razonEx").value.trim();
-      const d = document.getElementById("descripcionEx").value.trim();
-      const f = document.getElementById("imagenEx").files[0];
-      if (!m || !v || !r || !f) return alert("Completa todos los campos e imagen");
-      guardarMulta(m, v, r, d, f, true);
-    }
-
-    window.buscarMulta = async () => {
-      const q = document.getElementById("busquedaMatricula").value.trim();
-      if (!q) return alert("Ingresa una matrícula para buscar");
-      const snapshot = await getDocs(collection(db, "multas"));
-      let encontrada = false;
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.matricula === q) {
-          encontrada = true;
-          alert(`Multa encontrada:\nMatrícula: ${data.matricula}\nValor: ${data.valor}\nRazón: ${data.razon}`);
-          window.open(data.imagenURL, '_blank');
-        }
-      });
-      if (!encontrada) alert("No se encontraron multas con esa matrícula.");
+    window.cerrarFormularioCita = function () {
+      document.getElementById("formularioCita").style.display = "none";
     }
   </script>
 </body>
 </html>
-
-
