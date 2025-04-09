@@ -97,21 +97,6 @@
       margin-top: 10px;
       cursor: pointer;
     }
-    #infoExtra {
-      max-width: 800px;
-      margin: 0 auto 40px auto;
-      padding: 20px;
-      display: none;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #infoExtra h3 {
-      color: #6a1b9a;
-    }
-    #infoExtra p {
-      font-size: 16px;
-    }
     #subirMultaForm {
       display: none;
       background: white;
@@ -134,34 +119,8 @@
       padding: 10px 20px;
       border-radius: 5px;
     }
-    #formularioCita {
-      display: none;
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 25px;
-      z-index: 9999;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      max-width: 400px;
-      width: 90%;
-    }
-    #formularioCita input, #formularioCita textarea, #formularioCita select {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 15px;
-    }
-    #formularioCita button {
-      background-color: #6a1b9a;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      margin-right: 10px;
-      cursor: pointer;
+    #resultadoMulta {
+      margin-top: 40px;
     }
     footer {
       text-align: center;
@@ -184,38 +143,34 @@
     <h1>Movilidad en Línea</h1>
     <p>Consulta aquí fotodetecciones, multas y acuerdos de pago</p>
     <div class="search-box">
-      <input type="text" placeholder="Ingresa número de identificación o placa del vehículo">
-      <button><i class="fas fa-search"></i></button>
+      <input type="text" id="buscarMatricula" placeholder="Ingresa número de placa">
+      <button onclick="buscarMulta()"><i class="fas fa-search"></i></button>
     </div>
     <i class="fas fa-user-tie worker-icon" onclick="mostrarFormularioMulta()" title="Trabajador"></i>
+    <div id="resultadoMulta"></div>
   </section>
 
   <section class="card-container">
     <div class="card">
       <h3>Audiencias</h3>
-      <p>Información para tu audiencia</p>
-      <button onclick="mostrarInfo('Audiencias', 'Las audiencias permiten a los jugadores presentar su defensa ante sanciones. Estas se solicitan dentro del centro de control en el servidor, y son atendidas por personal del staff en días y horas programadas.')">Solicitar audiencia</button>
+      <p>Consulta tu próxima audiencia y documentos requeridos.</p>
+      <button>Ver más</button>
     </div>
     <div class="card">
       <h3>Estado</h3>
-      <p>Consulta el estado del vehículo</p>
-      <button onclick="mostrarInfo('Estado del Vehículo', 'Consulta si tu vehículo tiene multas pendientes, anotaciones por infracciones o reportes de agentes. El historial de tu vehículo es clave para evitar sanciones y mantenerlo en regla.')">Consultar estado</button>
+      <p>Verifica el estado de tu vehículo en tiempo real.</p>
+      <button>Consultar</button>
     </div>
     <div class="card">
       <h3>Pico y Placa</h3>
-      <p>Consulta si estás exento</p>
-      <button onclick="mostrarInfo('Pico y Placa', 'El sistema de pico y placa regula la movilidad en el servidor. Se basa en el último número de la matrícula. Consulta aquí si tu vehículo tiene restricción hoy y evita sanciones automáticas.')">Verificar restricción</button>
+      <p>Infórmate sobre las restricciones vigentes en tu zona.</p>
+      <button>Verificar</button>
     </div>
     <div class="card">
       <h3>Citas</h3>
-      <p>Agenda tu cita para trámites</p>
-      <button onclick="abrirFormularioCita()">Solicitar</button>
+      <p>Agenda tu cita para trámites presenciales.</p>
+      <button onclick="alert('Aquí irá el formulario de citas')">Solicitar</button>
     </div>
-  </section>
-
-  <section id="infoExtra">
-    <h3 id="tituloInfo"></h3>
-    <p id="contenidoInfo"></p>
   </section>
 
   <div id="subirMultaForm">
@@ -228,36 +183,13 @@
     <button onclick="subirMulta()">Subir Multa</button>
   </div>
 
-  <div id="formularioCita">
-    <h3>Agendar Cita</h3>
-    <form action="https://formsubmit.co/transitoverso@gmail.com" method="POST">
-      <input type="text" name="nombre" placeholder="Tu nombre" required>
-      <input type="email" name="correo" placeholder="Tu correo electrónico" required>
-      <input type="date" name="fecha" required>
-      <select name="hora" required>
-        <option value="">Selecciona una hora</option>
-        <option value="08:00 AM">08:00 AM</option>
-        <option value="09:00 AM">09:00 AM</option>
-        <option value="10:00 AM">10:00 AM</option>
-        <option value="11:00 AM">11:00 AM</option>
-        <option value="02:00 PM">02:00 PM</option>
-        <option value="03:00 PM">03:00 PM</option>
-        <option value="04:00 PM">04:00 PM</option>
-      </select>
-      <textarea name="motivo" placeholder="Motivo de la cita" required></textarea>
-      <input type="hidden" name="_captcha" value="false">
-      <button type="submit">Enviar</button>
-      <button type="button" onclick="cerrarFormularioCita()">Cancelar</button>
-    </form>
-  </div>
-
   <footer>
     <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
   </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
     const firebaseConfig = {
@@ -292,7 +224,7 @@
       const imagenFile = imagenInput.files[0];
 
       if (!matricula || !valor || !razon || !imagenFile) {
-        alert("Por favor completa todos los campos y selecciona una imagen.");
+        alert("Por favor completa todos los campos obligatorios.");
         return;
       }
 
@@ -313,28 +245,44 @@
         alert("Multa subida correctamente.");
         document.getElementById("subirMultaForm").reset();
         document.getElementById("subirMultaForm").style.display = "none";
-
       } catch (error) {
         console.error("Error al subir la multa:", error);
         alert("Hubo un error al subir la multa.");
       }
     }
 
-    window.abrirFormularioCita = function () {
-      document.getElementById("formularioCita").style.display = "block";
-    }
+    window.buscarMulta = async function () {
+      const placa = document.getElementById("buscarMatricula").value.trim();
+      const resultadoDiv = document.getElementById("resultadoMulta");
+      resultadoDiv.innerHTML = "";
 
-    window.cerrarFormularioCita = function () {
-      document.getElementById("formularioCita").style.display = "none";
-    }
+      if (!placa) {
+        alert("Por favor ingresa una placa para buscar.");
+        return;
+      }
 
-    window.mostrarInfo = function (titulo, contenido) {
-      document.getElementById("tituloInfo").textContent = titulo;
-      document.getElementById("contenidoInfo").textContent = contenido;
-      document.getElementById("infoExtra").style.display = "block";
+      const q = query(collection(db, "multas"), where("matricula", "==", placa));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        resultadoDiv.innerHTML = "<p>No se encontraron multas para esta placa.</p>";
+        return;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const multa = doc.data();
+        resultadoDiv.innerHTML = `
+          <div style="background:white; padding:20px; border-radius:10px; max-width:600px; margin: 30px auto; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+            <h3>Multa para placa: ${multa.matricula}</h3>
+            <img src="${multa.imagenURL}" style="max-width:100%; border-radius:5px;" alt="Imagen de la multa">
+            <p><strong>Valor:</strong> ${multa.valor}</p>
+            <p><strong>Razón:</strong> ${multa.razon}</p>
+            ${multa.descripcion ? `<p><strong>Descripción:</strong> ${multa.descripcion}</p>` : ""}
+          </div>
+        `;
+      });
     }
   </script>
 </body>
 </html>
-
 
