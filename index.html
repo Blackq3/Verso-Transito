@@ -97,7 +97,7 @@
       margin-top: 10px;
       cursor: pointer;
     }
-    #subirMultaForm {
+    #subirMultaForm, #subirMultaFormExclusivo {
       display: none;
       background: white;
       max-width: 500px;
@@ -106,21 +106,19 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    #subirMultaForm input, #subirMultaForm textarea {
+    #subirMultaForm input, #subirMultaForm textarea,
+    #subirMultaFormExclusivo input, #subirMultaFormExclusivo textarea {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
       font-size: 16px;
     }
-    #subirMultaForm button {
+    #subirMultaForm button, #subirMultaFormExclusivo button {
       background-color: #6a1b9a;
       color: white;
       border: none;
       padding: 10px 20px;
       border-radius: 5px;
-    }
-    #resultadoMulta {
-      margin-top: 40px;
     }
     footer {
       text-align: center;
@@ -143,33 +141,32 @@
     <h1>Movilidad en Línea</h1>
     <p>Consulta aquí fotodetecciones, multas y acuerdos de pago</p>
     <div class="search-box">
-      <input type="text" id="buscarMatricula" placeholder="Ingresa número de placa">
+      <input type="text" id="busquedaMatricula" placeholder="Ingresa número de identificación o placa del vehículo">
       <button onclick="buscarMulta()"><i class="fas fa-search"></i></button>
     </div>
     <i class="fas fa-user-tie worker-icon" onclick="mostrarFormularioMulta()" title="Trabajador"></i>
-    <div id="resultadoMulta"></div>
   </section>
 
   <section class="card-container">
     <div class="card">
       <h3>Audiencias</h3>
-      <p>Consulta tu próxima audiencia y documentos requeridos.</p>
-      <button>Ver más</button>
+      <p>Información sobre procesos de fotodetección y comparendos</p>
+      <button onclick="alert('Aquí se mostrará información profesional sobre audiencias')">Ver más</button>
     </div>
     <div class="card">
       <h3>Estado</h3>
-      <p>Verifica el estado de tu vehículo en tiempo real.</p>
-      <button>Consultar</button>
+      <p>Consulta el estado legal y técnico de tu vehículo</p>
+      <button onclick="alert('Aquí se mostrará información profesional sobre el estado del vehículo')">Consultar</button>
     </div>
     <div class="card">
       <h3>Pico y Placa</h3>
-      <p>Infórmate sobre las restricciones vigentes en tu zona.</p>
-      <button>Verificar</button>
+      <p>Verifica si tu vehículo puede circular hoy</p>
+      <button onclick="alert('Aquí se mostrará el calendario actualizado de pico y placa')">Verificar</button>
     </div>
     <div class="card">
       <h3>Citas</h3>
-      <p>Agenda tu cita para trámites presenciales.</p>
-      <button onclick="alert('Aquí irá el formulario de citas')">Solicitar</button>
+      <p>Agenda tu cita para trámites</p>
+      <button onclick="alert('Aquí irá agendamiento de citas con formulario')">Solicitar</button>
     </div>
   </section>
 
@@ -183,13 +180,24 @@
     <button onclick="subirMulta()">Subir Multa</button>
   </div>
 
+  <!-- Apartado exclusivo para trabajadores -->
+  <div id="subirMultaFormExclusivo">
+    <h3>Multas - Panel Exclusivo de Agentes</h3>
+    <input type="text" id="matriculaEx" placeholder="Matrícula del vehículo">
+    <input type="text" id="valorEx" placeholder="Valor de la multa">
+    <input type="text" id="razonEx" placeholder="Razón de la infracción">
+    <textarea id="descripcionEx" placeholder="Descripción detallada (opcional)"></textarea>
+    <input type="file" id="imagenEx" accept="image/*">
+    <button onclick="subirMultaExclusivo()">Subir Multa (Exclusivo)</button>
+  </div>
+
   <footer>
     <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
   </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
     const firebaseConfig = {
@@ -209,31 +217,20 @@
       const pass = prompt("Ingrese la contraseña de trabajador:");
       if (pass === "verso11") {
         document.getElementById("subirMultaForm").style.display = "block";
-        alert("Bienvenido agente. Estás de servicio.");
+        document.getElementById("subirMultaFormExclusivo").style.display = "block";
+        alert("Bienvenido agente. Estás en el panel exclusivo de trabajadores.");
       } else {
         alert("Contraseña incorrecta.");
       }
     }
 
-    window.subirMulta = async function () {
-      const matricula = document.getElementById("matricula").value.trim();
-      const valor = document.getElementById("valor").value.trim();
-      const razon = document.getElementById("razon").value.trim();
-      const descripcion = document.getElementById("descripcion").value.trim();
-      const imagenInput = document.getElementById("imagen");
-      const imagenFile = imagenInput.files[0];
-
-      if (!matricula || !valor || !razon || !imagenFile) {
-        alert("Por favor completa todos los campos obligatorios.");
-        return;
-      }
-
+    async function guardarMulta(matricula, valor, razon, descripcion, imagenFile, esExclusivo = false) {
       try {
         const storageRef = ref(storage, 'multas/' + Date.now() + '_' + imagenFile.name);
         const snapshot = await uploadBytes(storageRef, imagenFile);
         const url = await getDownloadURL(snapshot.ref);
 
-        await addDoc(collection(db, "multas"), {
+        await addDoc(collection(db, esExclusivo ? "multasExclusivas" : "multas"), {
           matricula,
           valor,
           razon,
@@ -243,46 +240,56 @@
         });
 
         alert("Multa subida correctamente.");
-        document.getElementById("subirMultaForm").reset();
-        document.getElementById("subirMultaForm").style.display = "none";
+        if (!esExclusivo) {
+          document.getElementById("subirMultaForm").reset();
+          document.getElementById("subirMultaForm").style.display = "none";
+        } else {
+          document.getElementById("subirMultaFormExclusivo").reset();
+        }
+
       } catch (error) {
         console.error("Error al subir la multa:", error);
         alert("Hubo un error al subir la multa.");
       }
     }
 
-    window.buscarMulta = async function () {
-      const placa = document.getElementById("buscarMatricula").value.trim();
-      const resultadoDiv = document.getElementById("resultadoMulta");
-      resultadoDiv.innerHTML = "";
+    window.subirMulta = () => {
+      const m = document.getElementById("matricula").value.trim();
+      const v = document.getElementById("valor").value.trim();
+      const r = document.getElementById("razon").value.trim();
+      const d = document.getElementById("descripcion").value.trim();
+      const f = document.getElementById("imagen").files[0];
+      if (!m || !v || !r || !f) return alert("Completa todos los campos e imagen");
+      guardarMulta(m, v, r, d, f);
+    }
 
-      if (!placa) {
-        alert("Por favor ingresa una placa para buscar.");
-        return;
-      }
+    window.subirMultaExclusivo = () => {
+      const m = document.getElementById("matriculaEx").value.trim();
+      const v = document.getElementById("valorEx").value.trim();
+      const r = document.getElementById("razonEx").value.trim();
+      const d = document.getElementById("descripcionEx").value.trim();
+      const f = document.getElementById("imagenEx").files[0];
+      if (!m || !v || !r || !f) return alert("Completa todos los campos e imagen");
+      guardarMulta(m, v, r, d, f, true);
+    }
 
-      const q = query(collection(db, "multas"), where("matricula", "==", placa));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        resultadoDiv.innerHTML = "<p>No se encontraron multas para esta placa.</p>";
-        return;
-      }
-
-      querySnapshot.forEach((doc) => {
-        const multa = doc.data();
-        resultadoDiv.innerHTML = `
-          <div style="background:white; padding:20px; border-radius:10px; max-width:600px; margin: 30px auto; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-            <h3>Multa para placa: ${multa.matricula}</h3>
-            <img src="${multa.imagenURL}" style="max-width:100%; border-radius:5px;" alt="Imagen de la multa">
-            <p><strong>Valor:</strong> ${multa.valor}</p>
-            <p><strong>Razón:</strong> ${multa.razon}</p>
-            ${multa.descripcion ? `<p><strong>Descripción:</strong> ${multa.descripcion}</p>` : ""}
-          </div>
-        `;
+    window.buscarMulta = async () => {
+      const q = document.getElementById("busquedaMatricula").value.trim();
+      if (!q) return alert("Ingresa una matrícula para buscar");
+      const snapshot = await getDocs(collection(db, "multas"));
+      let encontrada = false;
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.matricula === q) {
+          encontrada = true;
+          alert(`Multa encontrada:\nMatrícula: ${data.matricula}\nValor: ${data.valor}\nRazón: ${data.razon}`);
+          window.open(data.imagenURL, '_blank');
+        }
       });
+      if (!encontrada) alert("No se encontraron multas con esa matrícula.");
     }
   </script>
 </body>
 </html>
+
 
