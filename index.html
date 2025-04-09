@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tránsito Verso</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
@@ -11,81 +11,91 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-  <!-- HEADER -->
-  <header class="bg-white shadow-md p-4 flex items-center justify-between">
-    <div class="flex items-center space-x-4">
-      <img src="https://i.imgur.com/JI7EkFp.png" alt="Logo Tránsito Verso" class="h-12">
-      <h1 class="text-xl font-bold text-green-600">Tránsito Verso</h1>
-    </div>
-    <div class="space-x-2">
-      <button class="bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-100">Ingresar</button>
-      <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Crear cuenta</button>
-    </div>
-  </header>
+  <!-- BLOQUEO POR CONTRASEÑA -->
+  <div id="bloqueo" class="fixed inset-0 bg-white flex flex-col items-center justify-center text-center z-50">
+    <h1 class="text-4xl font-bold text-red-600 mb-6">🚧 EN ACTUALIZACIÓN 🚧</h1>
+    <p class="mb-4 text-lg text-gray-700">Ingresa la contraseña si eres desarrollador</p>
+    <input type="password" id="claveAcceso" placeholder="Contraseña" class="px-4 py-2 border rounded mb-4">
+    <button onclick="desbloquearSitio()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Acceder</button>
+  </div>
 
-  <!-- MAIN CONTENT -->
-  <main class="max-w-6xl mx-auto px-4 py-8">
+  <!-- CONTENIDO PRINCIPAL -->
+  <div id="contenidoPrincipal" class="hidden">
 
-    <!-- TÍTULO Y BUSCADOR -->
-    <div class="text-center mb-8">
-      <h2 class="text-3xl font-bold text-purple-700">Movilidad en Línea</h2>
-      <p class="text-gray-600 mt-2">Consulta aquí tus fotodetecciones, multas y acuerdos de pago</p>
-
-      <div class="mt-6 flex justify-center">
-        <input id="searchInput" type="text" placeholder="Ingresa la placa del vehículo" class="w-full max-w-xl px-4 py-2 border rounded-l-md">
-        <button onclick="buscarMulta()" class="bg-green-500 px-4 rounded-r-md text-white hover:bg-green-600">🔍</button>
+    <!-- HEADER -->
+    <header class="bg-white shadow-md p-4 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <img src="https://i.imgur.com/JI7EkFp.png" alt="Logo Tránsito Verso" class="h-12">
+        <h1 class="text-xl font-bold text-green-600">Tránsito Verso</h1>
       </div>
-    </div>
-
-    <!-- TARJETAS -->
-    <div class="grid md:grid-cols-3 gap-6 mb-12">
-      <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-        <h3 class="text-purple-700 font-semibold text-lg mb-2">Consultar</h3>
-        <p class="text-sm text-gray-600 mb-4">El estado del vehículo</p>
-        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar estado</button>
+      <div class="space-x-2">
+        <button class="bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-100">Ingresar</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Crear cuenta</button>
       </div>
-      <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-        <h3 class="text-purple-700 font-semibold text-lg mb-2">Exentos</h3>
-        <p class="text-sm text-gray-600 mb-4">Pico y placa</p>
-        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar exentos</button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+      <!-- TÍTULO Y BUSCADOR -->
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-purple-700">Movilidad en Línea</h2>
+        <p class="text-gray-600 mt-2">Consulta aquí tus fotodetecciones, multas y acuerdos de pago</p>
+
+        <div class="mt-6 flex justify-center">
+          <input id="searchInput" type="text" placeholder="Ingresa la placa del vehículo" class="w-full max-w-xl px-4 py-2 border rounded-l-md">
+          <button onclick="buscarMulta()" class="bg-green-500 px-4 rounded-r-md text-white hover:bg-green-600">🔍</button>
+        </div>
       </div>
-      <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
-        <h3 class="text-purple-700 font-semibold text-lg mb-2">Solicita aquí</h3>
-        <p class="text-sm text-gray-600 mb-4">Citas para tu trámite</p>
-        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Solicitar cita</button>
+
+      <!-- TARJETAS -->
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
+          <h3 class="text-purple-700 font-semibold text-lg mb-2">Consultar</h3>
+          <p class="text-sm text-gray-600 mb-4">El estado del vehículo</p>
+          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar estado</button>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
+          <h3 class="text-purple-700 font-semibold text-lg mb-2">Exentos</h3>
+          <p class="text-sm text-gray-600 mb-4">Pico y placa</p>
+          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Consultar exentos</button>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
+          <h3 class="text-purple-700 font-semibold text-lg mb-2">Solicita aquí</h3>
+          <p class="text-sm text-gray-600 mb-4">Citas para tu trámite</p>
+          <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Solicitar cita</button>
+        </div>
       </div>
-    </div>
 
-    <!-- RESULTADO DE BÚSQUEDA -->
-    <div id="resultado" class="hidden bg-white p-4 rounded shadow mb-6"></div>
+      <!-- RESULTADO -->
+      <div id="resultado" class="hidden bg-white p-4 rounded shadow mb-6"></div>
 
-    <!-- BOTÓN DE TRABAJADOR -->
-    <div class="flex justify-end mb-4">
-      <button onclick="mostrarFormularioTrabajador()" class="text-white bg-gray-700 hover:bg-gray-800 p-2 rounded-full">
-        👷
-      </button>
-    </div>
-
-    <!-- FORMULARIO PARA TRABAJADORES -->
-    <div id="formularioTrabajador" class="hidden bg-white p-6 rounded shadow-md space-y-4">
-      <input type="password" id="claveTrabajador" placeholder="Ingrese clave de trabajador" class="border px-4 py-2 rounded w-full">
-      <div id="contenidoTrabajador" class="hidden space-y-4">
-        <input type="text" id="matricula" placeholder="Matrícula" class="border px-4 py-2 rounded w-full">
-        <input type="text" id="valor" placeholder="Valor de la multa" class="border px-4 py-2 rounded w-full">
-        <input type="text" id="razon" placeholder="Razón de la multa" class="border px-4 py-2 rounded w-full">
-        <input type="file" id="imagen" class="w-full">
-        <button onclick="subirMulta()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Subir multa</button>
+      <!-- BOTÓN TRABAJADOR -->
+      <div class="flex justify-end mb-4">
+        <button onclick="mostrarFormularioTrabajador()" class="text-white bg-gray-700 hover:bg-gray-800 p-2 rounded-full">👷</button>
       </div>
-    </div>
 
-  </main>
+      <!-- FORMULARIO TRABAJADOR -->
+      <div id="formularioTrabajador" class="hidden bg-white p-6 rounded shadow-md space-y-4">
+        <input type="password" id="claveTrabajador" placeholder="Ingrese clave de trabajador" class="border px-4 py-2 rounded w-full">
+        <div id="contenidoTrabajador" class="hidden space-y-4">
+          <input type="text" id="matricula" placeholder="Matrícula" class="border px-4 py-2 rounded w-full">
+          <input type="text" id="valor" placeholder="Valor de la multa" class="border px-4 py-2 rounded w-full">
+          <input type="text" id="razon" placeholder="Razón de la multa" class="border px-4 py-2 rounded w-full">
+          <input type="file" id="imagen" class="w-full">
+          <button onclick="subirMulta()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Subir multa</button>
+        </div>
+      </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-white p-4 border-t text-center text-sm text-gray-500">
-    © 2025 Tránsito Verso — Todos los derechos reservados
-  </footer>
+    </main>
 
-  <!-- FIREBASE CONFIG & LÓGICA -->
+    <!-- FOOTER -->
+    <footer class="bg-white p-4 border-t text-center text-sm text-gray-500">
+      © 2025 Tránsito Verso — Todos los derechos reservados
+    </footer>
+  </div>
+
+  <!-- SCRIPTS -->
   <script>
     const firebaseConfig = {
       projectId: "transito-verso-517a0",
@@ -97,6 +107,16 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
+
+    function desbloquearSitio() {
+      const clave = document.getElementById("claveAcceso").value;
+      if (clave === "daniel1") {
+        document.getElementById("bloqueo").classList.add("hidden");
+        document.getElementById("contenidoPrincipal").classList.remove("hidden");
+      } else {
+        alert("Contraseña incorrecta.");
+      }
+    }
 
     function mostrarFormularioTrabajador() {
       const clave = prompt("Ingrese la clave de trabajador:");
@@ -152,4 +172,3 @@
   </script>
 </body>
 </html>
-
