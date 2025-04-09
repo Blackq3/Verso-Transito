@@ -1,16 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tránsito Verso</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #0d1b2a;
       color: white;
+    }
+    .bloqueo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      background-color: #0d1b2a;
+    }
+    .bloqueo h1 {
+      font-size: 28px;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+    }
+    .bloqueo input {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .bloqueo button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00b4d8;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #contenido {
+      display: none;
     }
     header {
       background-color: #1b263b;
@@ -103,45 +135,65 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
-    <nav>
-      <a href="#">Inicio</a>
-      <a href="#servicios">Servicios</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-  </header>
 
-  <section class="main-section">
-    <h2>Consulta tus Multas</h2>
-    <p>Ingresa la matrícula del vehículo para verificar el estado</p>
-    <div class="search-box">
-      <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
-      <button onclick="buscarMulta()">Buscar</button>
-    </div>
-    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
-  </section>
+  <div class="bloqueo" id="bloqueo">
+    <h1>⚠ EN ACTUALIZACIÓN ⚠<br>SI NO ERES DESARROLLADOR NO PUEDES INGRESAR</h1>
+    <p>Si eres desarrollador, ingresa la contraseña:</p>
+    <input type="password" id="claveDesarrollador" placeholder="Contraseña de desarrollador">
+    <button onclick="verificarClave()">Entrar</button>
+  </div>
 
-  <section class="card-container">
-    <div class="card">
-      <img src="https://cdn.pixabay.com/photo/2015/11/10/21/11/car-1031579_1280.jpg" alt="Carro 1">
-      <h3>Placa ABC123</h3>
-      <p>Multa por exceso de velocidad. Valor: $400.000</p>
-    </div>
-    <div class="card">
-      <img src="https://cdn.pixabay.com/photo/2016/03/27/19/44/car-1281641_1280.jpg" alt="Carro 2">
-      <h3>Placa XYZ789</h3>
-      <p>Mal estacionamiento. Valor: $250.000</p>
-    </div>
-  </section>
+  <div id="contenido">
+    <header>
+      <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
+      <nav>
+        <a href="#">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </header>
 
-  <i class="fas fa-cog tuerca-icono" onclick="accederTrabajador()"></i>
+    <section class="main-section">
+      <h2>Consulta tus Multas</h2>
+      <p>Ingresa la matrícula del vehículo para verificar el estado</p>
+      <div class="search-box">
+        <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
+        <button onclick="buscarMulta()">Buscar</button>
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
+    </section>
 
-  <footer>
-    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
-  </footer>
+    <section class="card-container">
+      <div class="card">
+        <img src="https://cdn.pixabay.com/photo/2015/11/10/21/11/car-1031579_1280.jpg" alt="Carro 1">
+        <h3>Placa ABC123</h3>
+        <p>Multa por exceso de velocidad. Valor: $400.000</p>
+      </div>
+      <div class="card">
+        <img src="https://cdn.pixabay.com/photo/2016/03/27/19/44/car-1281641_1280.jpg" alt="Carro 2">
+        <h3>Placa XYZ789</h3>
+        <p>Mal estacionamiento. Valor: $250.000</p>
+      </div>
+    </section>
+
+    <i class="fas fa-cog tuerca-icono" onclick="accederTrabajador()"></i>
+
+    <footer>
+      <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
+    </footer>
+  </div>
 
   <script>
+    function verificarClave() {
+      const clave = document.getElementById('claveDesarrollador').value;
+      if (clave === 'verso152') {
+        document.getElementById('bloqueo').style.display = 'none';
+        document.getElementById('contenido').style.display = 'block';
+      } else {
+        alert('Contraseña incorrecta.');
+      }
+    }
+
     function buscarMulta() {
       const placa = document.getElementById("busquedaMatricula").value;
       alert("Buscando multas para: " + placa);
