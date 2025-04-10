@@ -2,157 +2,254 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tránsito Verso</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0a0f2c;
-      color: white;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d1b2a;
+      color: white;
+    }
+    header {
+      background-color: #1b263b;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      color: #00b4d8;
+    }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    .main-section {
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .main-section img {
+      width: 100px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    .search-box {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .search-box input, .search-box button {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+    }
+    .search-box input {
+      width: 300px;
+      border-radius: 5px 0 0 5px;
+    }
+    .search-box button {
+      background-color: #00b4d8;
+      color: white;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .card {
+      background-color: #1b263b;
+      border-radius: 10px;
+      padding: 20px;
+      width: 250px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
       text-align: center;
     }
-
-    h1 {
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .card h3 {
+      color: #00b4d8;
+    }
+    .no-encontrado {
+      color: #ff6b6b;
       margin-top: 20px;
+      animation: deslizar 0.5s ease-in-out;
     }
-
-    input, button {
-      padding: 10px;
-      margin: 10px;
+    @keyframes deslizar {
+      0% { transform: translateX(-100px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
     }
-
-    .multa-card {
-      background: #1a1f3c;
-      margin: 10px auto;
-      padding: 15px;
-      border-radius: 8px;
-      max-width: 400px;
+    .tuerca-icono {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #00b4d8;
     }
-
-    .multa-card img {
-      max-width: 100%;
-      border-radius: 5px;
+    footer {
+      background-color: #1b263b;
+      text-align: center;
+      padding: 20px;
+      color: #ccc;
+      margin-top: 50px;
     }
-
-    #formularioMulta {
+    #panelMulta {
       display: none;
       position: fixed;
       top: 10%;
       left: 50%;
       transform: translateX(-50%);
-      background: #1a1f3c;
+      background-color: #1b263b;
       padding: 20px;
       border-radius: 10px;
-      z-index: 1000;
+      box-shadow: 0 0 20px black;
+      z-index: 999;
     }
-
-    #formularioMulta input {
-      display: block;
-      margin: 10px auto;
+    #panelMulta input, #panelMulta textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
     }
-
-    .icono-tuerca {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      font-size: 30px;
+    #panelMulta button {
+      padding: 10px 20px;
+      background-color: #00b4d8;
+      border: none;
+      color: white;
+      border-radius: 5px;
       cursor: pointer;
     }
-
-    .cerrar {
+    #cerrarPanel {
       position: absolute;
       top: 5px;
       right: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #noMultasMensaje {
-      animation: deslizar 0.5s ease-in-out;
-      background: #ff4d4d;
       color: white;
-      margin: 10px auto;
-      padding: 10px;
-      max-width: 400px;
-      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
     }
-
-    @keyframes deslizar {
-      from { transform: translateX(-100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    .discord-logo {
+    #discord-icono {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 50px;
-      height: 50px;
-      cursor: pointer;
+      font-size: 30px;
+      color: #7289da;
+      background-color: #1b263b;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      z-index: 999;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+    #discord-icono:hover {
+      transform: scale(1.2);
     }
   </style>
 </head>
 <body>
-  <h1>Tránsito Verso</h1>
 
-  <input type="text" id="matriculaBuscar" placeholder="Buscar matrícula" />
-  <button onclick="buscarMulta()">Buscar Multa</button>
+  <header>
+    <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
 
-  <div id="resultadoMulta"></div>
+  <section class="main-section">
+    <h2>Consulta tus Multas</h2>
+    <p>Ingresa la matrícula del vehículo para verificar el estado</p>
+    <div class="search-box">
+      <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
+      <button onclick="buscarMulta()">Buscar</button>
+    </div>
+    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
+    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
+  </section>
 
-  <div class="icono-tuerca" onclick="ingresarTrabajador()">⚙️</div>
+  <section class="card-container" id="contenedorMultas"></section>
 
-  <div id="formularioMulta">
-    <div class="cerrar" onclick="cerrarFormulario()">X</div>
-    <h2>Subir Multa</h2>
-    <input type="text" id="matricula" placeholder="Matrícula" />
-    <input type="text" id="valor" placeholder="Valor" />
-    <input type="text" id="razon" placeholder="Razón" />
-    <input type="file" id="imagen" />
-    <button onclick="subirMulta()">Subir Multa</button>
+  <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
+
+  <div id="panelMulta">
+    <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
+    <h3>Subir Multa</h3>
+    <input type="text" id="placa" placeholder="Matrícula">
+    <input type="number" id="valor" placeholder="Valor de la multa">
+    <textarea id="razon" placeholder="Razón de la multa"></textarea>
+    <input type="file" id="imagen">
+    <button onclick="subirMulta()">Subir multa</button>
   </div>
 
-  <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="discord-logo" onclick="window.open('https://discord.gg/S3mEJvpT', '_blank')" title="Únete a nuestro Discord">
+  <footer>
+    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
+  </footer>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <!-- Ícono de Discord fijo -->
+  <a href="https://discord.gg/S3mEJvpT" target="_blank" id="discord-icono" title="Únete a nuestro Discord">
+    <i class="fab fa-discord"></i>
+  </a>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDKFPYr7QBdgf2E61NNvPnpz8ENu39Vowo",
-      authDomain: "transito-verso-517a0.firebaseapp.com",
-      projectId: "transito-verso-517a0",
-      storageBucket: "transito-verso-517a0.appspot.com",
-      messagingSenderId: "1055859388199",
-      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
-    };
+  <script>
+    let multas = JSON.parse(localStorage.getItem('multas')) || [];
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    window.ingresarTrabajador = () => {
-      const pass = prompt("Ingresa la contraseña de trabajador:");
-      if (pass === "verso11") {
-        document.getElementById("formularioMulta").style.display = "block";
+    function buscarMulta() {
+      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
+      const contenedor = document.getElementById("contenedorMultas");
+      const noEncontrado = document.getElementById("noEncontrado");
+      contenedor.innerHTML = "";
+      noEncontrado.style.display = "none";
+      const resultados = multas.filter(m => m.placa === placa);
+      if (resultados.length === 0) {
+        noEncontrado.style.display = "block";
       } else {
-        alert("Contraseña incorrecta.");
+        resultados.forEach(multa => {
+          const card = `
+            <div class="card">
+              <img src="${multa.imagen}" alt="Multa">
+              <h3>Placa ${multa.placa}</h3>
+              <p>${multa.razon}<br>Valor: $${multa.valor}</p>
+            </div>`;
+          contenedor.innerHTML += card;
+        });
       }
-    };
+    }
 
-    window.cerrarFormulario = () => {
-      document.getElementById("formularioMulta").style.display = "none";
-    };
+    function abrirPanelTrabajador() {
+      const pass = prompt("Contraseña de trabajador:");
+      if (pass === "verso11") {
+        document.getElementById("panelMulta").style.display = "block";
+      } else {
+        alert("Contraseña incorrecta");
+      }
+    }
 
-    window.subirMulta = async () => {
-      const matricula = document.getElementById("matricula").value;
+    function cerrarPanel() {
+      document.getElementById("panelMulta").style.display = "none";
+    }
+
+    function subirMulta() {
+      const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
       const razon = document.getElementById("razon").value;
       const imagen = document.getElementById("imagen").files[0];
 
-      if (!matricula || !valor || !razon || !imagen) {
+      if (!placa || !valor || !razon || !imagen) {
         alert("Completa todos los campos.");
         return;
       }
@@ -160,51 +257,28 @@
       const formData = new FormData();
       formData.append("image", imagen);
 
-      const res = await fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
+      fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
         method: "POST",
-        body: formData,
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const nuevaMulta = {
+          placa,
+          valor,
+          razon,
+          imagen: data.data.url
+        };
+        multas.push(nuevaMulta);
+        localStorage.setItem("multas", JSON.stringify(multas));
+        alert("Multa subida correctamente.");
+        cerrarPanel();
+      })
+      .catch(err => {
+        console.error("Error al subir imagen", err);
+        alert("Error al subir la imagen");
       });
-
-      const data = await res.json();
-      const imagenUrl = data.data.url;
-
-      await addDoc(collection(db, "multas"), {
-        matricula,
-        valor,
-        razon,
-        imagenUrl,
-      });
-
-      alert("Multa subida correctamente.");
-      document.getElementById("formularioMulta").style.display = "none";
-    };
-
-    window.buscarMulta = async () => {
-      const matricula = document.getElementById("matriculaBuscar").value;
-      const resultado = document.getElementById("resultadoMulta");
-      resultado.innerHTML = "";
-
-      const multasRef = collection(db, "multas");
-      const q = query(multasRef, where("matricula", "==", matricula));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        resultado.innerHTML = `<div id="noMultasMensaje">❌ No se encontró ninguna multa con esta matrícula.</div>`;
-        return;
-      }
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        resultado.innerHTML += `
-          <div class="multa-card">
-            <img src="${data.imagenUrl}" alt="Multa" />
-            <p><strong>Matrícula:</strong> ${data.matricula}</p>
-            <p><strong>Valor:</strong> ${data.valor}</p>
-            <p><strong>Razón:</strong> ${data.razon}</p>
-          </div>
-        `;
-      });
-    };
+    }
   </script>
 </body>
 </html>
