@@ -40,6 +40,32 @@
       50% { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
+    .search-box {
+      display: flex;
+      justify-content: center;
+      margin: 20px auto;
+      gap: 10px;
+    }
+    .search-box input {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      width: 250px;
+      font-size: 16px;
+    }
+    .search-box button {
+      padding: 12px 20px;
+      background-color: #00b4d8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .search-box button:hover {
+      background-color: #0092b2;
+    }
     .card-container {
       display: flex;
       flex-wrap: wrap;
@@ -89,35 +115,47 @@
     #panelMulta {
       display: none;
       position: fixed;
-      top: 10%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       background-color: #1b263b;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px black;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
       z-index: 999;
+      width: 90%;
+      max-width: 400px;
     }
     #panelMulta input, #panelMulta textarea {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
+      padding: 12px;
+      margin: 10px 0;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
+      background-color: #0d1b2a;
+      color: white;
     }
     #panelMulta button {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 12px;
       background-color: #00b4d8;
       border: none;
       color: white;
-      border-radius: 5px;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s ease;
+    }
+    #panelMulta button:hover {
+      background-color: #0092b2;
     }
     #cerrarPanel {
       position: absolute;
-      top: 5px;
-      right: 10px;
+      top: 10px;
+      right: 15px;
       color: white;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -172,7 +210,7 @@
 
   <div id="panelMulta">
     <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
-    <h3>Subir Multa</h3>
+    <h3 style="color:#00b4d8; margin-bottom: 20px;">Subir Multa</h3>
     <input type="text" id="placa" placeholder="Matrícula">
     <input type="number" id="valor" placeholder="Valor de la multa">
     <textarea id="razon" placeholder="Razón de la multa"></textarea>
