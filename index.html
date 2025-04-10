@@ -125,18 +125,29 @@
       cursor: pointer;
       color: #00b4d8;
     }
-    #formularioMultas {
-      display: none;
-      padding: 30px;
-      background: #13293d;
-      text-align: center;
-    }
     footer {
       background-color: #1b263b;
       text-align: center;
       padding: 20px;
       color: #ccc;
       margin-top: 50px;
+    }
+
+    #notificacion {
+      position: fixed;
+      top: 100px;
+      left: -400px;
+      background-color: #ff4d4f;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 999;
+      transition: left 0.5s ease;
+    }
+    #notificacion.mostrar {
+      left: 20px;
     }
   </style>
 </head>
@@ -169,29 +180,31 @@
       <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
     </section>
 
-    <section class="card-container">
-      <!-- Aquí se mostrarán las multas desde Firebase -->
-    </section>
+    <div id="notificacion"></div>
+    <section class="card-container" id="resultadosMultas"></section>
 
     <i class="fas fa-cog tuerca-icono" onclick="accederTrabajador()"></i>
-
-    <div id="formularioMultas">
-      <h2>Subir Multa</h2>
-      <form id="formMulta">
-        <input type="text" id="placa" placeholder="Placa (ej. ABC123)" required style="padding:10px;width:200px;"><br><br>
-        <input type="number" id="valor" placeholder="Valor de la multa" required style="padding:10px;width:200px;"><br><br>
-        <input type="text" id="razon" placeholder="Razón de la multa" required style="padding:10px;width:300px;"><br><br>
-        <input type="file" id="imagen" accept="image/*" required><br><br>
-        <button type="submit" style="padding:10px 20px;background:#00b4d8;color:white;border:none;border-radius:5px;">Subir Multa</button>
-      </form>
-    </div>
 
     <footer>
       <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
     </footer>
   </div>
 
-  <!-- Scripts -->
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      projectId: "transito-verso-517a0",
+      authDomain: "transito-verso-517a0.firebaseapp.com",
+      storageBucket: "transito-verso-517a0.appspot.com",
+      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
   <script>
     function verificarClave() {
       const clave = document.getElementById('claveDesarrollador').value;
@@ -203,94 +216,47 @@
       }
     }
 
+    function buscarMulta() {
+      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
+      const contenedor = document.getElementById("resultadosMultas");
+      contenedor.innerHTML = "";
+
+      db.collection("multas").where("matricula", "==", placa).get().then(querySnapshot => {
+        if (querySnapshot.empty) {
+          const noti = document.getElementById("notificacion");
+          noti.innerText = `❌ No se encontró ninguna multa con la matrícula ${placa}`;
+          noti.classList.add("mostrar");
+          noti.style.display = "block";
+
+          setTimeout(() => {
+            noti.classList.remove("mostrar");
+            setTimeout(() => noti.style.display = "none", 500);
+          }, 3000);
+          return;
+        }
+
+        querySnapshot.forEach(doc => {
+          const multa = doc.data();
+          const card = `
+            <div class="card">
+              <img src="${multa.imagenURL}" alt="Multa">
+              <h3>Placa ${multa.matricula}</h3>
+              <p>${multa.razon} <br>Valor: $${multa.valor}</p>
+            </div>
+          `;
+          contenedor.innerHTML += card;
+        });
+      });
+    }
+
     function accederTrabajador() {
       const pass = prompt("Contraseña de trabajador:");
       if (pass === "verso11") {
-        document.getElementById("formularioMultas").style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
+        window.location.href = "formulario-trabajador.html";
       } else {
         alert("Contraseña incorrecta");
       }
     }
-  </script>
-
-  <!-- Firebase App + Firestore + Storage -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, getDocs, query, where
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import {
-      getStorage, ref, uploadBytes, getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDUs-2iPZXqjTuMElKqP_Rqdk51-T-OCk",
-      authDomain: "transito-verso-517a0.firebaseapp.com",
-      projectId: "transito-verso-517a0",
-      storageBucket: "transito-verso-517a0.appspot.com",
-      messagingSenderId: "1055859388199",
-      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
-    async function buscarMulta() {
-      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
-      const contenedor = document.querySelector(".card-container");
-      contenedor.innerHTML = "";
-
-      const multasRef = collection(db, "multas");
-      const q = query(multasRef, where("placa", "==", placa));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        contenedor.innerHTML = `<div class="card"><h3>No se encontraron multas para ${placa}</h3></div>`;
-        return;
-      }
-
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const card = `
-          <div class="card">
-            <img src="${data.imagenURL}" alt="Multa ${data.placa}">
-            <h3>Placa ${data.placa}</h3>
-            <p>${data.razon}. Valor: $${data.valor}</p>
-          </div>
-        `;
-        contenedor.innerHTML += card;
-      });
-    }
-
-    document.getElementById("formMulta").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const placa = document.getElementById("placa").value.trim().toUpperCase();
-      const valor = document.getElementById("valor").value;
-      const razon = document.getElementById("razon").value;
-      const imagen = document.getElementById("imagen").files[0];
-
-      if (!placa || !valor || !razon || !imagen) {
-        alert("Por favor completa todos los campos.");
-        return;
-      }
-
-      const storageRef = ref(storage, `multas/${placa}_${Date.now()}`);
-      await uploadBytes(storageRef, imagen);
-      const url = await getDownloadURL(storageRef);
-
-      await addDoc(collection(db, "multas"), {
-        placa,
-        valor,
-        razon,
-        imagenURL: url
-      });
-
-      alert("Multa subida correctamente.");
-      document.getElementById("formMulta").reset();
-    });
   </script>
 </body>
 </html>
