@@ -5,44 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tránsito Verso</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #0d1b2a;
       color: white;
-    }
-    .bloqueo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      background-color: #0d1b2a;
-    }
-    .bloqueo h1 {
-      font-size: 28px;
-      color: #ff6b6b;
-      margin-bottom: 20px;
-    }
-    .bloqueo input, .bloqueo button {
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: none;
-      font-size: 16px;
-    }
-    .bloqueo button {
-      background-color: #00b4d8;
-      color: white;
-      cursor: pointer;
-    }
-    #contenido {
-      display: none;
     }
     header {
       background-color: #1b263b;
@@ -77,19 +45,19 @@
       display: flex;
       justify-content: center;
     }
-    .search-box input {
+    .search-box input, .search-box button {
       padding: 10px;
-      width: 300px;
-      border: none;
-      border-radius: 5px 0 0 5px;
       font-size: 16px;
+      border: none;
+    }
+    .search-box input {
+      width: 300px;
+      border-radius: 5px 0 0 5px;
     }
     .search-box button {
-      padding: 10px;
       background-color: #00b4d8;
-      border: none;
-      border-radius: 0 5px 5px 0;
       color: white;
+      border-radius: 0 5px 5px 0;
       cursor: pointer;
     }
     .card-container {
@@ -114,8 +82,14 @@
     .card h3 {
       color: #00b4d8;
     }
-    .card p {
-      font-size: 14px;
+    .no-encontrado {
+      color: #ff6b6b;
+      margin-top: 20px;
+      animation: deslizar 0.5s ease-in-out;
+    }
+    @keyframes deslizar {
+      0% { transform: translateX(-100px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
     }
     .tuerca-icono {
       position: fixed;
@@ -125,17 +99,6 @@
       cursor: pointer;
       color: #00b4d8;
     }
-    .formulario-multa {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #1b263b;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
     footer {
       background-color: #1b263b;
       text-align: center;
@@ -143,140 +106,155 @@
       color: #ccc;
       margin-top: 50px;
     }
-    .no-multa {
-      margin-top: 20px;
-      animation: deslizar 0.5s ease forwards;
-      color: #ff6b6b;
+    #panelMulta {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1b263b;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px black;
+      z-index: 999;
     }
-    @keyframes deslizar {
-      0% { opacity: 0; transform: translateX(-50px); }
-      100% { opacity: 1; transform: translateX(0); }
+    #panelMulta input, #panelMulta textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    #panelMulta button {
+      padding: 10px 20px;
+      background-color: #00b4d8;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #cerrarPanel {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="bloqueo" id="bloqueo">
-    <h1>⚠ EN ACTUALIZACIÓN ⚠<br>SI NO ERES DESARROLLADOR NO PUEDES INGRESAR</h1>
-    <p>Si eres desarrollador, ingresa la contraseña:</p>
-    <input type="password" id="claveDesarrollador" placeholder="Contraseña de desarrollador">
-    <button onclick="verificarClave()">Entrar</button>
-  </div>
 
-  <div id="contenido">
-    <header>
-      <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
-      <nav>
-        <a href="#">Inicio</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
-    </header>
+  <header>
+    <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
 
-    <section class="main-section">
-      <h2>Consulta tus Multas</h2>
-      <p>Ingresa la matrícula del vehículo para verificar el estado</p>
-      <div class="search-box">
-        <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
-        <button onclick="buscarMulta()">Buscar</button>
-      </div>
-      <div id="resultadoBusqueda" class="card-container"></div>
-    </section>
-
-    <div class="formulario-multa" id="formularioMulta">
-      <h3>Subir nueva multa</h3>
-      <input type="text" id="matricula" placeholder="Matrícula"><br><br>
-      <input type="text" id="razon" placeholder="Razón"><br><br>
-      <input type="number" id="valor" placeholder="Valor"><br><br>
-      <input type="file" id="imagen"><br><br>
-      <button onclick="subirMulta()">Subir Multa</button>
+  <section class="main-section">
+    <h2>Consulta tus Multas</h2>
+    <p>Ingresa la matrícula del vehículo para verificar el estado</p>
+    <div class="search-box">
+      <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
+      <button onclick="buscarMulta()">Buscar</button>
     </div>
+    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
+    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
+  </section>
 
-    <i class="fas fa-cog tuerca-icono" onclick="accederTrabajador()"></i>
+  <section class="card-container" id="contenedorMultas"></section>
 
-    <footer>
-      <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
-    </footer>
+  <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
+
+  <div id="panelMulta">
+    <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
+    <h3>Subir Multa</h3>
+    <input type="text" id="placa" placeholder="Matrícula">
+    <input type="number" id="valor" placeholder="Valor de la multa">
+    <textarea id="razon" placeholder="Razón de la multa"></textarea>
+    <input type="file" id="imagen">
+    <button onclick="subirMulta()">Subir multa</button>
   </div>
+
+  <footer>
+    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
+  </footer>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDKFPYr7QBdgf2E61NNvPnpz8ENu39Vowo",
-      authDomain: "transito-verso-517a0.firebaseapp.com",
-      projectId: "transito-verso-517a0",
-      storageBucket: "transito-verso-517a0.appspot.com",
-      messagingSenderId: "1055859388199",
-      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+    let multas = JSON.parse(localStorage.getItem('multas')) || [];
 
-    function verificarClave() {
-      const clave = document.getElementById('claveDesarrollador').value;
-      if (clave === 'verso152') {
-        document.getElementById('bloqueo').style.display = 'none';
-        document.getElementById('contenido').style.display = 'block';
+    function buscarMulta() {
+      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
+      const contenedor = document.getElementById("contenedorMultas");
+      const noEncontrado = document.getElementById("noEncontrado");
+      contenedor.innerHTML = "";
+      noEncontrado.style.display = "none";
+      const resultados = multas.filter(m => m.placa === placa);
+      if (resultados.length === 0) {
+        noEncontrado.style.display = "block";
       } else {
-        alert('Contraseña incorrecta.');
+        resultados.forEach(multa => {
+          const card = `
+            <div class="card">
+              <img src="${multa.imagen}" alt="Multa">
+              <h3>Placa ${multa.placa}</h3>
+              <p>${multa.razon}<br>Valor: $${multa.valor}</p>
+            </div>`;
+          contenedor.innerHTML += card;
+        });
       }
     }
 
-    function buscarMulta() {
-      const placa = document.getElementById("busquedaMatricula").value.toUpperCase();
-      const contenedor = document.getElementById("resultadoBusqueda");
-      contenedor.innerHTML = "";
-      db.collection("multas").where("matricula", "==", placa).get().then(snapshot => {
-        if (snapshot.empty) {
-          contenedor.innerHTML = '<div class="no-multa">🚫 No se encontró ninguna multa con esta matrícula.</div>';
-        } else {
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            contenedor.innerHTML += `
-              <div class="card">
-                <img src="${data.imagenURL}" alt="Multa">
-                <h3>Placa ${data.matricula}</h3>
-                <p>${data.razon}. Valor: $${data.valor}</p>
-              </div>
-            `;
-          });
-        }
-      });
-    }
-
-    function accederTrabajador() {
+    function abrirPanelTrabajador() {
       const pass = prompt("Contraseña de trabajador:");
       if (pass === "verso11") {
-        document.getElementById("formularioMulta").style.display = "block";
+        document.getElementById("panelMulta").style.display = "block";
       } else {
         alert("Contraseña incorrecta");
       }
     }
 
+    function cerrarPanel() {
+      document.getElementById("panelMulta").style.display = "none";
+    }
+
     function subirMulta() {
-      const matricula = document.getElementById("matricula").value.toUpperCase();
-      const razon = document.getElementById("razon").value;
+      const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
+      const razon = document.getElementById("razon").value;
       const imagen = document.getElementById("imagen").files[0];
 
-      if (!matricula || !razon || !valor || !imagen) {
+      if (!placa || !valor || !razon || !imagen) {
         alert("Completa todos los campos.");
         return;
       }
 
-      const storageRef = storage.ref("multas/" + imagen.name);
-      storageRef.put(imagen).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(url => {
-          db.collection("multas").add({
-            matricula: matricula,
-            razon: razon,
-            valor: valor,
-            imagenURL: url
-          }).then(() => {
-            alert("Multa subida correctamente.");
-            document.getElementById("formularioMulta").style.display = "none";
-          });
-        });
+      const formData = new FormData();
+      formData.append("image", imagen);
+
+      fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const nuevaMulta = {
+          placa,
+          valor,
+          razon,
+          imagen: data.data.url
+        };
+        multas.push(nuevaMulta);
+        localStorage.setItem("multas", JSON.stringify(multas));
+        alert("Multa subida correctamente.");
+        cerrarPanel();
+      })
+      .catch(err => {
+        console.error("Error al subir imagen", err);
+        alert("Error al subir la imagen");
       });
     }
   </script>
