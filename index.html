@@ -29,7 +29,7 @@
     }
     .main-section {
       text-align: center;
-      padding: 50px 20px;
+      padding: 50px 20px 20px;
     }
     .main-section img {
       width: 100px;
@@ -71,7 +71,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      margin-top: 40px;
+      margin-top: 20px;
     }
     .card {
       background-color: #1b263b;
@@ -193,8 +193,8 @@
       <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
       <button onclick="buscarMulta()">Buscar</button>
     </div>
-    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
     <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
+    <div class="card-container" id="contenedorMultas"></div>
   </section>
 
   <section class="servicios" id="servicios">
@@ -203,8 +203,6 @@
       Tránsito Verso es una innovadora plataforma digital diseñada para modernizar y facilitar la gestión del tránsito vehicular. Nuestro objetivo es ofrecer a ciudadanos y trabajadores del sector vial una herramienta eficiente, segura y fácil de usar para consultar, registrar y dar seguimiento a infracciones de tránsito en tiempo real.
     </p>
   </section>
-
-  <section class="card-container" id="contenedorMultas"></section>
 
   <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
 
