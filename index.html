@@ -18,126 +18,270 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: relative;
     }
     header h1 {
       color: #00b4d8;
-      margin: 0;
     }
     nav a {
       color: white;
       margin-left: 20px;
       text-decoration: none;
-      font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #00b4d8;
     }
     .main-section {
       text-align: center;
-      padding: 40px 20px;
+      padding: 50px 20px;
     }
-    .main-section input {
+    .main-section img {
+      width: 100px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    .search-box {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .search-box input, .search-box button {
       padding: 10px;
-      width: 250px;
-      border-radius: 5px;
+      font-size: 16px;
       border: none;
     }
-    .main-section button {
-      padding: 10px 15px;
+    .search-box input {
+      width: 300px;
+      border-radius: 5px 0 0 5px;
+    }
+    .search-box button {
+      background-color: #00b4d8;
+      color: white;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .card {
+      background-color: #1b263b;
+      border-radius: 10px;
+      padding: 20px;
+      width: 250px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .card h3 {
+      color: #00b4d8;
+    }
+    .no-encontrado {
+      color: #ff6b6b;
+      margin-top: 20px;
+      animation: deslizar 0.5s ease-in-out;
+    }
+    @keyframes deslizar {
+      0% { transform: translateX(-100px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    .tuerca-icono {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #00b4d8;
+    }
+    footer {
+      background-color: #1b263b;
+      text-align: center;
+      padding: 20px;
+      color: #ccc;
+      margin-top: 50px;
+    }
+    #panelMulta {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1b263b;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+      z-index: 999;
+      width: 90%;
+      max-width: 400px;
+    }
+    #panelMulta input, #panelMulta textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #415a77;
+      color: white;
+    }
+    #panelMulta button {
+      padding: 12px 20px;
       background-color: #00b4d8;
       border: none;
-      border-radius: 5px;
-      margin-left: 10px;
-      cursor: pointer;
       color: white;
-    }
-    .result {
-      margin-top: 20px;
-      background: #1b263b;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .fab {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #7289da;
-      color: white;
-      padding: 15px;
-      border-radius: 50%;
-      font-size: 20px;
+      font-weight: bold;
+      border-radius: 8px;
       cursor: pointer;
+      width: 100%;
     }
-    #onlineWorkers {
+    #cerrarPanel {
       position: absolute;
-      top: 60px;
-      left: 30px;
-      background-color: #1b263b;
-      padding: 10px;
-      border-radius: 10px;
-      width: 250px;
-    }
-    #onlineWorkers h3 {
-      margin-top: 0;
-    }
-    #onlineWorkers ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    #onlineWorkers li {
-      margin: 8px 0;
-      background: #0d1b2a;
-      padding: 8px;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .status {
-      padding: 5px 10px;
-      border-radius: 5px;
+      top: 10px;
+      right: 15px;
       color: white;
-      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
     }
-    .connected {
-      background-color: green;
-    }
-    .disconnected {
-      background-color: red;
+    #panelMulta h3 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #00b4d8;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div>
-      <h1>Tránsito Verso</h1>
-      <div id="onlineWorkers">
-        <h3>Agentes en servicio</h3>
-        <ul id="workerList"></ul>
-      </div>
-    </div>
+    <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
     <nav>
       <a href="#">Inicio</a>
       <a href="#servicios">Servicios</a>
       <a href="https://discord.gg/S3mEJvpT" target="_blank">Contacto</a>
-      <a href="#" onclick="showWorkerModal()">⚙️</a>
     </nav>
   </header>
 
-  <div class="main-section">
-    <h2>Consulta de Multas</h2>
-    <input type="text" id="searchInput" placeholder="Ingresa la matrícula...">
-    <button onclick="searchMulta()">Buscar</button>
-    <div id="result" class="result" style="display:none;"></div>
+  <section class="main-section">
+    <h2>Consulta tus Multas</h2>
+    <p>Ingresa la matrícula del vehículo para verificar el estado</p>
+    <div class="search-box">
+      <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
+      <button onclick="buscarMulta()">Buscar</button>
+    </div>
+    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
+    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
+  </section>
+
+  <section class="card-container" id="contenedorMultas"></section>
+
+  <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
+
+  <div id="panelMulta">
+    <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
+    <h3>Subir Multa</h3>
+    <input type="text" id="placa" placeholder="Matrícula">
+    <input type="number" id="valor" placeholder="Valor de la multa">
+    <input type="text" id="dueno" placeholder="Dueño del vehículo">
+    <input type="text" id="oficial" placeholder="Oficial encargado">
+    <textarea id="razon" placeholder="Razón de la multa"></textarea>
+    <input type="file" id="imagen">
+    <button onclick="subirMulta()">Subir multa</button>
   </div>
 
-  <div id="servicios" class="main-section">
-    <h2>¿Qué es Tránsito Verso?</h2>
-    <p>Tránsito Verso es una innovadora plataforma digital diseñada para modernizar y facilitar la gestión del tránsito vehicular. Nuestro objetivo es ofrecer a ciudadanos y trabajadores del sector vial una herramienta eficiente, segura y fácil de usar para consultar, registrar y dar seguimiento a infracciones de tránsito en tiempo real.</p>
-  </div>
+  <footer>
+    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
+  </footer>
 
-  <!-- Aquí iría el resto del código necesario para el funcionamiento del sistema -->
+  <script>
+    let multas = JSON.parse(localStorage.getItem('multas')) || [];
+
+    function buscarMulta() {
+      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
+      const contenedor = document.getElementById("contenedorMultas");
+      const noEncontrado = document.getElementById("noEncontrado");
+      contenedor.innerHTML = "";
+      noEncontrado.style.display = "none";
+      const resultados = multas.filter(m => m.placa === placa);
+      if (resultados.length === 0) {
+        noEncontrado.style.display = "block";
+      } else {
+        resultados.forEach(multa => {
+          const card = `
+            <div class="card">
+              <img src="${multa.imagen}" alt="Multa">
+              <h3>Placa ${multa.placa}</h3>
+              <p><strong>Dueño:</strong> ${multa.dueno}<br>
+              <strong>Oficial:</strong> ${multa.oficial}<br>
+              <strong>Razón:</strong> ${multa.razon}<br>
+              <strong>Valor:</strong> $${multa.valor}</p>
+            </div>`;
+          contenedor.innerHTML += card;
+        });
+      }
+    }
+
+    function abrirPanelTrabajador() {
+      const pass = prompt("Contraseña de trabajador:");
+      if (pass === "verso11") {
+        document.getElementById("panelMulta").style.display = "block";
+      } else {
+        alert("Contraseña incorrecta");
+      }
+    }
+
+    function cerrarPanel() {
+      document.getElementById("panelMulta").style.display = "none";
+    }
+
+    function subirMulta() {
+      const placa = document.getElementById("placa").value.trim().toUpperCase();
+      const valor = document.getElementById("valor").value;
+      const razon = document.getElementById("razon").value;
+      const imagen = document.getElementById("imagen").files[0];
+      const dueno = document.getElementById("dueno").value.trim();
+      const oficial = document.getElementById("oficial").value.trim();
+
+      if (!placa || !valor || !razon || !imagen || !dueno || !oficial) {
+        alert("Completa todos los campos.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", imagen);
+
+      fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const nuevaMulta = {
+          placa,
+          valor,
+          razon,
+          dueno,
+          oficial,
+          imagen: data.data.url
+        };
+        multas.push(nuevaMulta);
+        localStorage.setItem("multas", JSON.stringify(multas));
+        alert("Multa subida correctamente.");
+        cerrarPanel();
+      })
+      .catch(err => {
+        console.error("Error al subir imagen", err);
+        alert("Error al subir la imagen");
+      });
+    }
+  </script>
 </body>
 </html>
