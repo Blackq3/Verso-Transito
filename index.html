@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tránsito Verso</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
     body {
       margin: 0;
@@ -26,10 +28,6 @@
       color: white;
       margin-left: 20px;
       text-decoration: none;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #00b4d8;
     }
     .main-section {
       text-align: center;
@@ -117,45 +115,54 @@
       left: 50%;
       transform: translateX(-50%);
       background-color: #1b263b;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px black;
       z-index: 999;
-      width: 90%;
-      max-width: 400px;
+      width: 300px;
     }
     #panelMulta input, #panelMulta textarea {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       border: none;
-      border-radius: 8px;
-      background-color: #415a77;
-      color: white;
+      border-radius: 5px;
     }
     #panelMulta button {
-      padding: 12px 20px;
+      padding: 10px 20px;
       background-color: #00b4d8;
       border: none;
       color: white;
-      font-weight: bold;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      width: 100%;
     }
     #cerrarPanel {
       position: absolute;
-      top: 10px;
-      right: 15px;
+      top: 5px;
+      right: 10px;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      font-size: 18px;
     }
-    #panelMulta h3 {
-      text-align: center;
-      margin-bottom: 15px;
+    #agentesServicio {
+      position: fixed;
+      top: 90px;
+      left: 20px;
+      background: #1b263b;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px black;
+    }
+    #agentesServicio h4 {
+      margin-top: 0;
       color: #00b4d8;
+    }
+    #agentesServicio ul {
+      list-style: none;
+      padding: 0;
+    }
+    #agentesServicio li {
+      padding: 4px 0;
     }
   </style>
 </head>
@@ -169,6 +176,11 @@
       <a href="https://discord.gg/S3mEJvpT" target="_blank">Contacto</a>
     </nav>
   </header>
+
+  <div id="agentesServicio">
+    <h4>Agentes en servicio</h4>
+    <ul id="listaAgentes"></ul>
+  </div>
 
   <section class="main-section">
     <h2>Consulta tus Multas</h2>
@@ -190,9 +202,9 @@
     <h3>Subir Multa</h3>
     <input type="text" id="placa" placeholder="Matrícula">
     <input type="number" id="valor" placeholder="Valor de la multa">
-    <input type="text" id="dueno" placeholder="Dueño del vehículo">
-    <input type="text" id="oficial" placeholder="Oficial encargado">
     <textarea id="razon" placeholder="Razón de la multa"></textarea>
+    <input type="text" id="oficial" placeholder="Oficial encargado">
+    <input type="text" id="dueno" placeholder="Dueño del vehículo">
     <input type="file" id="imagen">
     <button onclick="subirMulta()">Subir multa</button>
   </div>
@@ -202,6 +214,17 @@
   </footer>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCEW_egOqFGXOnoxHAcKM9_uE1h1MRfUoI",
+      authDomain: "transito-verso-517a0.firebaseapp.com",
+      projectId: "transito-verso-517a0",
+      storageBucket: "transito-verso-517a0.appspot.com",
+      messagingSenderId: "1055859388199",
+      appId: "1:1055859388199:web:ee4da62ab82663ef414302"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let multas = JSON.parse(localStorage.getItem('multas')) || [];
 
     function buscarMulta() {
@@ -219,10 +242,7 @@
             <div class="card">
               <img src="${multa.imagen}" alt="Multa">
               <h3>Placa ${multa.placa}</h3>
-              <p><strong>Dueño:</strong> ${multa.dueno}<br>
-              <strong>Oficial:</strong> ${multa.oficial}<br>
-              <strong>Razón:</strong> ${multa.razon}<br>
-              <strong>Valor:</strong> $${multa.valor}</p>
+              <p>${multa.razon}<br>Valor: $${multa.valor}<br>Oficial: ${multa.oficial}<br>Dueño: ${multa.dueno}</p>
             </div>`;
           contenedor.innerHTML += card;
         });
@@ -233,6 +253,13 @@
       const pass = prompt("Contraseña de trabajador:");
       if (pass === "verso11") {
         document.getElementById("panelMulta").style.display = "block";
+        const nombre = prompt("Nombre del agente:");
+        if (nombre) {
+          db.collection("agentes").doc(nombre).set({
+            activo: true,
+            timestamp: Date.now()
+          });
+        }
       } else {
         alert("Contraseña incorrecta");
       }
@@ -246,11 +273,11 @@
       const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
       const razon = document.getElementById("razon").value;
+      const oficial = document.getElementById("oficial").value;
+      const dueno = document.getElementById("dueno").value;
       const imagen = document.getElementById("imagen").files[0];
-      const dueno = document.getElementById("dueno").value.trim();
-      const oficial = document.getElementById("oficial").value.trim();
 
-      if (!placa || !valor || !razon || !imagen || !dueno || !oficial) {
+      if (!placa || !valor || !razon || !imagen || !oficial || !dueno) {
         alert("Completa todos los campos.");
         return;
       }
@@ -268,8 +295,8 @@
           placa,
           valor,
           razon,
-          dueno,
           oficial,
+          dueno,
           imagen: data.data.url
         };
         multas.push(nuevaMulta);
@@ -282,6 +309,22 @@
         alert("Error al subir la imagen");
       });
     }
+
+    function actualizarAgentes() {
+      const lista = document.getElementById("listaAgentes");
+      db.collection("agentes").onSnapshot(snapshot => {
+        lista.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const tiempo = Date.now() - data.timestamp;
+          const enLinea = tiempo < 60000;
+          const estado = enLinea ? "🟢" : "🔴";
+          lista.innerHTML += `<li>${estado} ${doc.id}</li>`;
+        });
+      });
+    }
+
+    actualizarAgentes();
   </script>
 </body>
 </html>
