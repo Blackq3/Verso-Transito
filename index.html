@@ -187,13 +187,13 @@
   </header>
 
   <section class="main-section">
-    <h2>Consulta tus Multas</h2>
+    <h2>Consulta tus Cepos</h2>
     <p>Ingresa la matrícula del vehículo para verificar el estado</p>
     <div class="search-box">
       <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
       <button onclick="buscarMulta()">Buscar</button>
     </div>
-    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
+    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ningun cepo con esta matrícula</p>
     <div class="card-container" id="contenedorMultas"></div>
   </section>
 
@@ -212,8 +212,10 @@
     <input type="text" id="placa" placeholder="Matrícula">
     <input type="number" id="valor" placeholder="Valor de la multa">
     <textarea id="razon" placeholder="Razón de la multa"></textarea>
+    <input type="text" id="dueno" placeholder="Dueño del carro">
+    <input type="text" id="trabajador" placeholder="Oficial que sube el cepo">
     <input type="file" id="imagen">
-    <button onclick="subirMulta()">Subir multa</button>
+    <button onclick="subirMulta()">Subir cepo-multa</button>
   </div>
 
   <footer>
@@ -239,6 +241,8 @@
               <img src="${multa.imagen}" alt="Multa">
               <h3>Placa ${multa.placa}</h3>
               <p>${multa.razon}<br>Valor: $${multa.valor}</p>
+              <p><strong>Dueño:</strong> ${multa.dueno}</p>
+              <p><strong>Trabajador:</strong> ${multa.trabajador}</p>
             </div>`;
           contenedor.innerHTML += card;
         });
@@ -262,9 +266,11 @@
       const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
       const razon = document.getElementById("razon").value;
+      const dueno = document.getElementById("dueno").value;
+      const trabajador = document.getElementById("trabajador").value;
       const imagen = document.getElementById("imagen").files[0];
 
-      if (!placa || !valor || !razon || !imagen) {
+      if (!placa || !valor || !razon || !imagen || !dueno || !trabajador) {
         alert("Completa todos los campos.");
         return;
       }
@@ -282,11 +288,13 @@
           placa,
           valor,
           razon,
-          imagen: data.data.url
+          imagen: data.data.url,
+          dueno,
+          trabajador
         };
         multas.push(nuevaMulta);
         localStorage.setItem("multas", JSON.stringify(multas));
-        alert("Multa subida correctamente.");
+        alert("Cepo subido correctamente.");
         cerrarPanel();
       })
       .catch(err => {
