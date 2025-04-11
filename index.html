@@ -157,6 +157,25 @@
       margin-bottom: 15px;
       color: #00b4d8;
     }
+    .servicios-section {
+      padding: 50px 20px;
+      background-color: #1e2d3d;
+      text-align: center;
+    }
+    .servicios-section h2 {
+      color: #00b4d8;
+      margin-bottom: 20px;
+    }
+    .servicios-lista {
+      max-width: 600px;
+      margin: auto;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .servicios-lista li {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -181,7 +200,6 @@
     <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
   </section>
 
-  <!-- Nueva sección "¿Qué es Tránsito Verso?" -->
   <section class="main-section" style="background-color: #1e2d3d; padding-top: 20px;">
     <h2>¿Qué es Tránsito Verso?</h2>
     <p style="max-width: 800px; margin: auto; font-size: 18px; line-height: 1.6;">
@@ -189,6 +207,17 @@
       Nuestro objetivo es ofrecer a ciudadanos y trabajadores del sector vial una herramienta eficiente, segura y fácil de usar para consultar,
       registrar y dar seguimiento a infracciones de tránsito en tiempo real.
     </p>
+  </section>
+
+  <!-- NUEVA SECCIÓN DE SERVICIOS -->
+  <section class="servicios-section" id="servicios">
+    <h2>Servicios</h2>
+    <ul class="servicios-lista">
+      <li>🚗 Colocación de cepo por parqueo indebido: <strong>$120.000 COP</strong></li>
+      <li>🚧 Remoción de cepo dentro de 24 horas: <strong>$80.000 COP</strong></li>
+      <li>🛠️ Remoción de cepo pasadas 24 horas: <strong>$150.000 COP</strong></li>
+      <li>📦 Transporte de vehículo inmovilizado: <strong>$200.000 COP</strong></li>
+    </ul>
   </section>
 
   <section class="card-container" id="contenedorMultas"></section>
