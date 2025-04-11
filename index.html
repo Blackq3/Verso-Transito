@@ -220,6 +220,7 @@
     <input type="text" id="placa" placeholder="Matrícula">
     <input type="number" id="valor" placeholder="Valor de la multa">
     <input type="text" id="dueno" placeholder="Dueño del vehículo">
+    <input type="text" id="modelo" placeholder="Modelo del vehículo">
     <input type="text" id="oficial" placeholder="Oficial encargado">
     <textarea id="razon" placeholder="Razón de la multa"></textarea>
     <input type="file" id="imagen">
@@ -251,6 +252,7 @@
             <img src="${multa.imagen}" alt="Multa">
             <h3>Placa ${multa.placa}</h3>
             <p><strong>Dueño:</strong> ${multa.dueno}<br>
+            <strong>Modelo:</strong> $${multa.Modelo}</p>
             <strong>Oficial:</strong> ${multa.oficial}<br>
             <strong>Razón:</strong> ${multa.razon}<br>
             <strong>Valor:</strong> $${multa.valor}</p>
@@ -277,6 +279,7 @@
       const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
       const dueno = document.getElementById("dueno").value;
+      const modelo = document.getElementById("modelo").value;
       const oficial = document.getElementById("oficial").value;
       const razon = document.getElementById("razon").value;
       const imagenInput = document.getElementById("imagen");
