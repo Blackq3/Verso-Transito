@@ -200,7 +200,7 @@
     <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
   </section>
 
-  <section class="main-section" style="background-color: #1e2d3d; padding-top: 20px;">
+  <section class="main-section" style="background-color: #1e2d3d;">
     <h2>¿Qué es Tránsito Verso?</h2>
     <p style="max-width: 800px; margin: auto; font-size: 18px; line-height: 1.6;">
       Tránsito Verso es una innovadora plataforma digital diseñada para modernizar y facilitar la gestión del tránsito vehicular.
@@ -209,103 +209,13 @@
     </p>
   </section>
 
-  <!-- NUEVA SECCIÓN DE SERVICIOS -->
   <section class="servicios-section" id="servicios">
     <h2>Servicios</h2>
     <ul class="servicios-lista">
-      <li>🏍️  Colocación de cepo para motos: <strong>MOTOS
-
-|Sánchez - Yamaha DT $4m|
-|PCJ-600 - Pulsar 180 $5m|
-|Faggio - Yamaha N-Max $ 6m|
-|Quadbike - cuatrimoto $7m|
-|Freeway - Moto Clásica $10m|
-|Fcr-900 - Yamaha MT-09 $21m|
-|Wayfarer - XT 660R $30m|
-</strong></li>
-      <li>🚘 Remoción de cepo vehiculos: <strong>VEHICULOS
-
-CONCE
-BF-400 - Kawasaki Z1
-Blista Compact - Renault 4
-Camper - van volswager
-Uranus - Corvette ZR1
-Roadtrain - kenworth W900
-Berkley's RC Van - Furgoneta
-Buffalo - Ford Mustang Shelby
-Tahoma - Renault Duster
-Cadrona - Audi RS5
-Clover - McLaren P1
-Club - Volkswagen Gol
-Comet - coche ruso
-Elegant - Chevrolet Spark GT
-Elegy - Nissan Skyline
-Emperor - Jeep Cherokee
-Euros - Jeep wrangler
-Feltzer - Toyota Supra
-Flash - Chevrolet Spark
-Fortune - Porsche 911
-Huntley - Toyota VX-R
-Intruder - Ford Ranger
-Landstalker - Cadillac Scalade
-Mountain Bike - cicla Gravity
-Merit - Dodge Charger SRT
-Mesa - Jeep Wrangler Rubicon
-Nebula - Lexus LX-570
-Oceanic - Mazda 3
-Perennial - Toyota 4Runner
-Phoenix - Toyota Supra MK5
-Premier - Audi Q7
-Quadbike - cuatrimoto
-Rancher - Ford Raptor
-Sentínel - Ford Explorer
-Solair - Mitsubishi Pajero
-Picador - Toyota Machito
-Sultán - Mitsubishi Lancer
-Glendale Damage - Chevrolet Suburban
-Intruder - Toyota Autana
-Turismo - Dodge Challenger
-Willard - Hummer H3
-Sandking - Jeep Gladiador
-Vincent - Lamborghini Urus
-Sentinel - Toyota Land Cruiser 2024
-Primo - Mini Cooper
-
-35,000,000</strong></li>
-      <li>🚘 🏅 Remoción de cepo vehiculos vip: <strong>VIP
-Greenwood - Tundra
-Majestic - Roll Roice
-Banshee - audi R8
-Bullet - Gtr
-Admiral - Bugatti Chiron
-Infernus - Ferrari
-Jester - lamborghini murciélago
-Super Gt - Tesla
-stafford - bentley continental
-NRG-500 - Ninja H2R
-Sunrise - Ford Shelby
-Bmw S100rr $65m
-
-65,000,000</strong></li>
-      <li>🚘 🚁 Transporte de helicoptero y vehículos exclusivos: <strong>EXCLUSIVOS
-Hotring Racer - Reguera (No Incluye en VIP)
-Hotring Racer 2 - Lamborghini Huracan
-Hotring Racer 3 - Mustang
-Cheetah - Mazda Rx7
-Alpha - BMW M3
-windsor - Skyline
-Rancher Lure - Range Rover
-FBI Rancher - Mercedes-Benz Clase G
-Glendale - Ferrari
-Zr-350 - Jesko
-BF Injection - Can Am
-Virgo - Pagani
-
-100,000,000
-
-HELIPCOTEROS,AVIONES
-
-120,000,000</strong></li>
+      <li>🏍️ Colocación de cepo para motos desde: <strong>$4,000,000</strong></li>
+      <li>🚘 Remoción de cepo para vehículos normales: <strong>$35,000,000</strong></li>
+      <li>🚘 🏅 Vehículos VIP: <strong>$65,000,000</strong></li>
+      <li>🚘 🚁 Helicópteros y exclusivos: <strong>$100,000,000 - $120,000,000</strong></li>
     </ul>
   </section>
 
@@ -338,21 +248,23 @@ HELIPCOTEROS,AVIONES
       const noEncontrado = document.getElementById("noEncontrado");
       contenedor.innerHTML = "";
       noEncontrado.style.display = "none";
+
       const resultados = multas.filter(m => m.placa === placa);
       if (resultados.length === 0) {
         noEncontrado.style.display = "block";
       } else {
         resultados.forEach(multa => {
-          const card = 
-            <div class="card">
-              <img src="${multa.imagen}" alt="Multa">
-              <h3>Placa ${multa.placa}</h3>
-              <p><strong>Dueño:</strong> ${multa.dueno}<br>
-              <strong>Oficial:</strong> ${multa.oficial}<br>
-              <strong>Razón:</strong> ${multa.razon}<br>
-              <strong>Valor:</strong> $${multa.valor}</p>
-            </div>;
-          contenedor.innerHTML += card;
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${multa.imagen}" alt="Multa">
+            <h3>Placa ${multa.placa}</h3>
+            <p><strong>Dueño:</strong> ${multa.dueno}<br>
+            <strong>Oficial:</strong> ${multa.oficial}<br>
+            <strong>Razón:</strong> ${multa.razon}<br>
+            <strong>Valor:</strong> $${multa.valor}</p>
+          `;
+          contenedor.appendChild(card);
         });
       }
     }
@@ -373,43 +285,35 @@ HELIPCOTEROS,AVIONES
     function subirMulta() {
       const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
+      const dueno = document.getElementById("dueno").value;
+      const oficial = document.getElementById("oficial").value;
       const razon = document.getElementById("razon").value;
-      const imagen = document.getElementById("imagen").files[0];
-      const dueno = document.getElementById("dueno").value.trim();
-      const oficial = document.getElementById("oficial").value.trim();
+      const imagenInput = document.getElementById("imagen");
+      const archivo = imagenInput.files[0];
 
-      if (!placa || !valor || !razon || !imagen || !dueno || !oficial) {
-        alert("Completa todos los campos.");
+      if (!placa || !valor || !dueno || !oficial || !razon || !archivo) {
+        alert("Por favor completa todos los campos.");
         return;
       }
 
-      const formData = new FormData();
-      formData.append("image", imagen);
-
-      fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
+      const lector = new FileReader();
+      lector.onload = function (e) {
         const nuevaMulta = {
           placa,
           valor,
-          razon,
           dueno,
           oficial,
-          imagen: data.data.url
+          razon,
+          imagen: e.target.result
         };
         multas.push(nuevaMulta);
-        localStorage.setItem("multas", JSON.stringify(multas));
-        alert("Multa subida correctamente.");
+        localStorage.setItem('multas', JSON.stringify(multas));
         cerrarPanel();
-      })
-      .catch(err => {
-        console.error("Error al subir imagen", err);
-        alert("Error al subir la imagen");
-      });
+        alert("Multa registrada correctamente.");
+      };
+      lector.readAsDataURL(archivo);
     }
   </script>
 </body>
 </html>
+
