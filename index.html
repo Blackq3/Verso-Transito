@@ -2,329 +2,164 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tránsito Verso</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #0d1b2a;
       color: white;
-    }
-    header {
-      background-color: #1b263b;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      color: #00b4d8;
-    }
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-    }
-    .main-section {
-      text-align: center;
-      padding: 50px 20px;
-    }
-    .main-section img {
-      width: 100px;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-    .search-box {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-    }
-    .search-box input, .search-box button {
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-    }
-    .search-box input {
-      width: 300px;
-      border-radius: 5px 0 0 5px;
-    }
-    .search-box button {
-      background-color: #00b4d8;
-      color: white;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-    }
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 40px;
-    }
-    .card {
-      background-color: #1b263b;
-      border-radius: 10px;
-      padding: 20px;
-      width: 250px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-    .card img {
-      width: 100%;
-      border-radius: 10px;
-    }
-    .card h3 {
-      color: #00b4d8;
-    }
-    .no-encontrado {
-      color: #ff6b6b;
-      margin-top: 20px;
-      animation: deslizar 0.5s ease-in-out;
-    }
-    @keyframes deslizar {
-      0% { transform: translateX(-100px); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
-    }
-    .tuerca-icono {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #00b4d8;
-    }
-    footer {
-      background-color: #1b263b;
-      text-align: center;
-      padding: 20px;
-      color: #ccc;
-      margin-top: 50px;
-    }
-    #panelMulta {
-      display: none;
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #1b263b;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px black;
-      z-index: 999;
-      width: 300px;
-    }
-    #panelMulta input, #panelMulta textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 5px;
-    }
-    #panelMulta button {
-      padding: 10px 20px;
-      background-color: #00b4d8;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #cerrarPanel {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #agentesServicio {
-      position: fixed;
-      top: 90px;
-      left: 20px;
-      background: #1b263b;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px black;
-    }
-    #agentesServicio h4 {
-      margin-top: 0;
-      color: #00b4d8;
-    }
-    #agentesServicio ul {
-      list-style: none;
+      margin: 0;
       padding: 0;
     }
-    #agentesServicio li {
-      padding: 4px 0;
+    .header {
+      background-color: #1b263b;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .header h1 {
+      margin: 0;
+    }
+    .gear-icon {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+    #uploadFormContainer {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1b263b;
+      padding: 40px;
+      border-radius: 15px;
+      z-index: 1000;
+      width: 90%;
+      max-width: 700px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+    #agentsOnline {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      background-color: #415a77;
+      padding: 10px;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <h1><i class="fas fa-car"></i> Tránsito Verso</h1>
-    <nav>
-      <a href="#">Inicio</a>
-      <a href="#servicios">Servicios</a>
-      <a href="https://discord.gg/S3mEJvpT" target="_blank">Contacto</a>
-    </nav>
-  </header>
-
-  <div id="agentesServicio">
-    <h4>Agentes en servicio</h4>
-    <ul id="listaAgentes"></ul>
+  <div class="header">
+    <h1>Tránsito Verso</h1>
+    <div class="gear-icon" onclick="verifyPassword()">⚙️</div>
+    <div id="agentsOnline"><strong>Agentes en servicio:</strong><ul id="agentList"></ul></div>
   </div>
 
-  <section class="main-section">
-    <h2>Consulta tus Multas</h2>
-    <p>Ingresa la matrícula del vehículo para verificar el estado</p>
-    <div class="search-box">
-      <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
-      <button onclick="buscarMulta()">Buscar</button>
-    </div>
-    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
-    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
-  </section>
-
-  <section class="card-container" id="contenedorMultas"></section>
-
-  <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
-
-  <div id="panelMulta">
-    <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
-    <h3>Subir Multa</h3>
-    <input type="text" id="placa" placeholder="Matrícula">
-    <input type="number" id="valor" placeholder="Valor de la multa">
-    <textarea id="razon" placeholder="Razón de la multa"></textarea>
-    <input type="text" id="oficial" placeholder="Oficial encargado">
-    <input type="text" id="dueno" placeholder="Dueño del vehículo">
-    <input type="file" id="imagen">
-    <button onclick="subirMulta()">Subir multa</button>
+  <div id="uploadFormContainer">
+    <div class="close-btn" onclick="closeUploadForm()">✖</div>
+    <h2>Subir Multa</h2>
+    <input type="text" id="matricula" placeholder="Matrícula"><br><br>
+    <input type="text" id="valor" placeholder="Valor"><br><br>
+    <input type="text" id="razon" placeholder="Razón"><br><br>
+    <input type="file" id="imagenMulta"><br><br>
+    <button onclick="subirMulta()">Subir Multa</button>
   </div>
-
-  <footer>
-    <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
-  </footer>
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyCEW_egOqFGXOnoxHAcKM9_uE1h1MRfUoI",
+      apiKey: "AIzaSyD7-jFaFIKGeAJDA2hxpj-qtd9nh07O9nQ",
       authDomain: "transito-verso-517a0.firebaseapp.com",
       projectId: "transito-verso-517a0",
       storageBucket: "transito-verso-517a0.appspot.com",
       messagingSenderId: "1055859388199",
       appId: "1:1055859388199:web:ee4da62ab82663ef414302"
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let multas = JSON.parse(localStorage.getItem('multas')) || [];
+    let agentId = null;
 
-    function buscarMulta() {
-      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
-      const contenedor = document.getElementById("contenedorMultas");
-      const noEncontrado = document.getElementById("noEncontrado");
-      contenedor.innerHTML = "";
-      noEncontrado.style.display = "none";
-      const resultados = multas.filter(m => m.placa === placa);
-      if (resultados.length === 0) {
-        noEncontrado.style.display = "block";
-      } else {
-        resultados.forEach(multa => {
-          const card = `
-            <div class="card">
-              <img src="${multa.imagen}" alt="Multa">
-              <h3>Placa ${multa.placa}</h3>
-              <p>${multa.razon}<br>Valor: $${multa.valor}<br>Oficial: ${multa.oficial}<br>Dueño: ${multa.dueno}</p>
-            </div>`;
-          contenedor.innerHTML += card;
-        });
-      }
-    }
-
-    function abrirPanelTrabajador() {
-      const pass = prompt("Contraseña de trabajador:");
+    function verifyPassword() {
+      const pass = prompt("Ingresa la contraseña de trabajador:");
       if (pass === "verso11") {
-        document.getElementById("panelMulta").style.display = "block";
-        const nombre = prompt("Nombre del agente:");
-        if (nombre) {
-          db.collection("agentes").doc(nombre).set({
-            activo: true,
-            timestamp: Date.now()
-          });
-        }
+        const name = prompt("Ingresa tu nombre:");
+        agentId = name + Date.now();
+        db.collection("agentes").doc(agentId).set({
+          nombre: name,
+          rol: "Agente en servicio",
+          activo: true,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("uploadFormContainer").style.display = "block";
       } else {
         alert("Contraseña incorrecta");
       }
     }
 
-    function cerrarPanel() {
-      document.getElementById("panelMulta").style.display = "none";
+    function closeUploadForm() {
+      document.getElementById("uploadFormContainer").style.display = "none";
     }
 
-    function subirMulta() {
-      const placa = document.getElementById("placa").value.trim().toUpperCase();
+    async function subirMulta() {
+      const matricula = document.getElementById("matricula").value;
       const valor = document.getElementById("valor").value;
       const razon = document.getElementById("razon").value;
-      const oficial = document.getElementById("oficial").value;
-      const dueno = document.getElementById("dueno").value;
-      const imagen = document.getElementById("imagen").files[0];
-
-      if (!placa || !valor || !razon || !imagen || !oficial || !dueno) {
-        alert("Completa todos los campos.");
-        return;
-      }
+      const imagen = document.getElementById("imagenMulta").files[0];
 
       const formData = new FormData();
       formData.append("image", imagen);
 
-      fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
+      const response = await fetch("https://api.imgbb.com/1/upload?key=68cbf34320ed02f2ffaf3dcc18ccbb41", {
         method: "POST",
         body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        const nuevaMulta = {
-          placa,
-          valor,
-          razon,
-          oficial,
-          dueno,
-          imagen: data.data.url
-        };
-        multas.push(nuevaMulta);
-        localStorage.setItem("multas", JSON.stringify(multas));
-        alert("Multa subida correctamente.");
-        cerrarPanel();
-      })
-      .catch(err => {
-        console.error("Error al subir imagen", err);
-        alert("Error al subir la imagen");
       });
+
+      const data = await response.json();
+      const imageUrl = data.data.url;
+
+      db.collection("multas").add({
+        matricula,
+        valor,
+        razon,
+        imagen: imageUrl,
+        fecha: new Date()
+      });
+
+      alert("Multa subida correctamente");
+      closeUploadForm();
     }
 
-    function actualizarAgentes() {
-      const lista = document.getElementById("listaAgentes");
-      db.collection("agentes").onSnapshot(snapshot => {
-        lista.innerHTML = "";
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const tiempo = Date.now() - data.timestamp;
-          const enLinea = tiempo < 60000;
-          const estado = enLinea ? "🟢" : "🔴";
-          lista.innerHTML += `<li>${estado} ${doc.id}</li>`;
-        });
-      });
-    }
+    window.addEventListener("beforeunload", () => {
+      if (agentId) {
+        db.collection("agentes").doc(agentId).update({ activo: false });
+      }
+    });
 
-    actualizarAgentes();
+    db.collection("agentes").onSnapshot(snapshot => {
+      const list = document.getElementById("agentList");
+      list.innerHTML = "";
+      snapshot.forEach(doc => {
+        const agente = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${agente.nombre} - ${agente.rol} ${agente.activo ? "🟢" : "🔴"}`;
+        list.appendChild(li);
+      });
+    });
   </script>
 </body>
 </html>
