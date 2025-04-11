@@ -29,7 +29,7 @@
     }
     .main-section {
       text-align: center;
-      padding: 50px 20px 20px;
+      padding: 50px 20px;
     }
     .main-section img {
       width: 100px;
@@ -41,37 +41,31 @@
       100% { transform: translateY(0); }
     }
     .search-box {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
-      margin: 20px auto;
-      gap: 10px;
+    }
+    .search-box input, .search-box button {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
     }
     .search-box input {
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      width: 250px;
-      font-size: 16px;
+      width: 300px;
+      border-radius: 5px 0 0 5px;
     }
     .search-box button {
-      padding: 12px 20px;
       background-color: #00b4d8;
       color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 0 5px 5px 0;
       cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .search-box button:hover {
-      background-color: #0092b2;
     }
     .card-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      margin-top: 20px;
+      margin-top: 30px;
     }
     .card {
       background-color: #1b263b;
@@ -115,63 +109,53 @@
     #panelMulta {
       display: none;
       position: fixed;
-      top: 50%;
+      top: 10%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       background-color: #1b263b;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px black;
       z-index: 999;
-      width: 90%;
-      max-width: 400px;
     }
     #panelMulta input, #panelMulta textarea {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      padding: 10px;
+      margin: 8px 0;
       border: none;
-      border-radius: 10px;
-      background-color: #0d1b2a;
-      color: white;
+      border-radius: 5px;
     }
     #panelMulta button {
-      width: 100%;
-      padding: 12px;
+      padding: 10px 20px;
       background-color: #00b4d8;
       border: none;
       color: white;
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.3s ease;
-    }
-    #panelMulta button:hover {
-      background-color: #0092b2;
     }
     #cerrarPanel {
       position: absolute;
-      top: 10px;
-      right: 15px;
+      top: 5px;
+      right: 10px;
       color: white;
-      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
     }
-    .servicios {
-      padding: 40px 20px;
-      text-align: center;
-      background-color: #14213d;
+    #trabajadoresOnline {
+      background-color: #1b263b;
+      padding: 20px;
+      margin: 40px auto;
+      max-width: 500px;
+      border-radius: 10px;
     }
-    .servicios h2 {
+    #trabajadoresOnline h3 {
       color: #00b4d8;
-      margin-bottom: 20px;
     }
-    .servicios p {
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
+    .trabajador {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #243447;
     }
   </style>
 </head>
@@ -187,35 +171,34 @@
   </header>
 
   <section class="main-section">
-    <h2>Consulta tus Cepos</h2>
+    <h2>Consulta tus Multas</h2>
     <p>Ingresa la matrícula del vehículo para verificar el estado</p>
     <div class="search-box">
       <input type="text" id="busquedaMatricula" placeholder="Ej. ABC123">
       <button onclick="buscarMulta()">Buscar</button>
     </div>
-    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ningun cepo con esta matrícula</p>
+    <img src="https://cdn-icons-png.flaticon.com/512/2942/2942522.png" alt="vehiculo">
+    <p id="noEncontrado" class="no-encontrado" style="display: none;">🚫 No se encontró ninguna multa con esta matrícula</p>
     <div class="card-container" id="contenedorMultas"></div>
   </section>
 
-  <section class="servicios" id="servicios">
-    <h2>¿Qué es Tránsito Verso?</h2>
-    <p>
-      Tránsito Verso es una innovadora plataforma digital diseñada para modernizar y facilitar la gestión del tránsito vehicular. Nuestro objetivo es ofrecer a ciudadanos y trabajadores del sector vial una herramienta eficiente, segura y fácil de usar para consultar, registrar y dar seguimiento a infracciones de tránsito en tiempo real.
-    </p>
-  </section>
+  <div id="trabajadoresOnline">
+    <h3>Trabajadores en línea</h3>
+    <div id="listaTrabajadores"></div>
+  </div>
 
   <i class="fas fa-cog tuerca-icono" onclick="abrirPanelTrabajador()"></i>
 
   <div id="panelMulta">
     <span id="cerrarPanel" onclick="cerrarPanel()">X</span>
-    <h3 style="color:#00b4d8; margin-bottom: 20px;">Subir Multa</h3>
-    <input type="text" id="placa" placeholder="Matrícula">
+    <h3>Subir Multa</h3>
+    <input type="text" id="placa" placeholder="Matrícula del vehículo">
+    <input type="text" id="dueno" placeholder="Dueño del vehículo">
+    <input type="text" id="trabajador" placeholder="Nombre del trabajador">
     <input type="number" id="valor" placeholder="Valor de la multa">
     <textarea id="razon" placeholder="Razón de la multa"></textarea>
-    <input type="text" id="dueno" placeholder="Dueño del carro">
-    <input type="text" id="trabajador" placeholder="Oficial que sube el cepo">
     <input type="file" id="imagen">
-    <button onclick="subirMulta()">Subir cepo-multa</button>
+    <button onclick="subirMulta()">Subir multa</button>
   </div>
 
   <footer>
@@ -224,6 +207,7 @@
 
   <script>
     let multas = JSON.parse(localStorage.getItem('multas')) || [];
+    let trabajadoresEnLinea = JSON.parse(localStorage.getItem('trabajadores')) || [];
 
     function buscarMulta() {
       const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
@@ -240,9 +224,7 @@
             <div class="card">
               <img src="${multa.imagen}" alt="Multa">
               <h3>Placa ${multa.placa}</h3>
-              <p>${multa.razon}<br>Valor: $${multa.valor}</p>
-              <p><strong>Dueño:</strong> ${multa.dueno}</p>
-              <p><strong>Trabajador:</strong> ${multa.trabajador}</p>
+              <p>Dueño: ${multa.dueno}<br>${multa.razon}<br>Valor: $${multa.valor}<br>Registrado por: ${multa.trabajador}</p>
             </div>`;
           contenedor.innerHTML += card;
         });
@@ -251,7 +233,13 @@
 
     function abrirPanelTrabajador() {
       const pass = prompt("Contraseña de trabajador:");
-      if (pass === "TransitoVerso66") {
+      if (pass === "verso11") {
+        const nombre = prompt("Nombre del trabajador:");
+        if (nombre) {
+          trabajadoresEnLinea.push({ nombre, rol: "Agente en servicio" });
+          localStorage.setItem('trabajadores', JSON.stringify(trabajadoresEnLinea));
+          actualizarListaTrabajadores();
+        }
         document.getElementById("panelMulta").style.display = "block";
       } else {
         alert("Contraseña incorrecta");
@@ -266,9 +254,9 @@
       const placa = document.getElementById("placa").value.trim().toUpperCase();
       const valor = document.getElementById("valor").value;
       const razon = document.getElementById("razon").value;
+      const imagen = document.getElementById("imagen").files[0];
       const dueno = document.getElementById("dueno").value;
       const trabajador = document.getElementById("trabajador").value;
-      const imagen = document.getElementById("imagen").files[0];
 
       if (!placa || !valor || !razon || !imagen || !dueno || !trabajador) {
         alert("Completa todos los campos.");
@@ -288,20 +276,31 @@
           placa,
           valor,
           razon,
-          imagen: data.data.url,
           dueno,
-          trabajador
+          trabajador,
+          imagen: data.data.url
         };
         multas.push(nuevaMulta);
         localStorage.setItem("multas", JSON.stringify(multas));
-        alert("Cepo subido correctamente.");
+        alert("Multa subida correctamente.");
         cerrarPanel();
+        buscarMulta();
       })
       .catch(err => {
         console.error("Error al subir imagen", err);
         alert("Error al subir la imagen");
       });
     }
+
+    function actualizarListaTrabajadores() {
+      const contenedor = document.getElementById("listaTrabajadores");
+      contenedor.innerHTML = "";
+      trabajadoresEnLinea.forEach(t => {
+        contenedor.innerHTML += `<div class="trabajador"><strong>${t.nombre}</strong><br>Rol: ${t.rol}</div>`;
+      });
+    }
+
+    actualizarListaTrabajadores();
   </script>
 </body>
 </html>
