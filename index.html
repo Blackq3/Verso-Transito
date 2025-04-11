@@ -264,7 +264,7 @@
 
     function abrirPanelTrabajador() {
       const pass = prompt("Contraseña de trabajador:");
-      if (pass === "verso11") {
+      if (pass === "TransitoVerso66") {
         document.getElementById("panelMulta").style.display = "block";
       } else {
         alert("Contraseña incorrecta");
@@ -285,7 +285,7 @@
       const imagenInput = document.getElementById("imagen");
       const archivo = imagenInput.files[0];
 
-      if (!placa || !valor || !dueno || !oficial || !razon || !archivo) {
+      if (!placa || !valor || !dueno || !modelo || !oficial || !razon || !archivo) {
         alert("Por favor completa todos los campos.");
         return;
       }
