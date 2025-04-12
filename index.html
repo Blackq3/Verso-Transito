@@ -241,83 +241,47 @@
     <p>&copy; 2025 Tránsito Verso. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    let multas = JSON.parse(localStorage.getItem('multas')) || [];
+<script>
+  function subirMulta() {
+    const placa = document.getElementById("placa").value.trim().toUpperCase();
+    const valor = document.getElementById("valor").value;
+    const dueno = document.getElementById("dueno").value.trim();
+    const modelo = document.getElementById("modelo").value.trim();
+    const oficial = document.getElementById("oficial").value.trim();
+    const razon = document.getElementById("razon").value.trim();
+    const imagenInput = document.getElementById("imagen");
 
-    function buscarMulta() {
-      const placa = document.getElementById("busquedaMatricula").value.trim().toUpperCase();
-      const contenedor = document.getElementById("contenedorMultas");
-      const noEncontrado = document.getElementById("noEncontrado");
-      contenedor.innerHTML = "";
-      noEncontrado.style.display = "none";
-
-      const resultados = multas.filter(m => m.placa === placa);
-      if (resultados.length === 0) {
-        noEncontrado.style.display = "block";
-      } else {
-        resultados.forEach(multa => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <img src="${multa.imagen}" alt="Multa">
-            <h3>Placa ${multa.placa}</h3>
-            <p><strong>Dueño:</strong> ${multa.dueno}<br>
-            <strong>Modelo:</strong> ${multa.modelo}</p>
-            <strong>Oficial:</strong> ${multa.oficial}<br>
-            <strong>Razón:</strong> ${multa.razon}<br>
-            <strong>Valor:</strong> $${multa.valor}</p>
-          `;
-          contenedor.appendChild(card);
-        });
-      }
+    if (!placa || !valor || !dueno || !modelo || !oficial || !razon || !imagenInput.files.length) {
+      alert("Por favor, completa todos los campos y selecciona una imagen.");
+      return;
     }
 
-    function abrirPanelTrabajador() {
-      const pass = prompt("Contraseña de trabajador:");
-      if (pass === "TransitoVerso66") {
-        document.getElementById("panelMulta").style.display = "block";
-      } else {
-        alert("Contraseña incorrecta");
-      }
-    }
-
-    function cerrarPanel() {
-      document.getElementById("panelMulta").style.display = "none";
-    }
-
-    function subirMulta() {
-      const placa = document.getElementById("placa").value.trim().toUpperCase();
-      const valor = document.getElementById("valor").value;
-      const dueno = document.getElementById("dueno").value;
-      const modelo = document.getElementById("modelo").value;
-      const oficial = document.getElementById("oficial").value;
-      const razon = document.getElementById("razon").value;
-      const imagenInput = document.getElementById("imagen");
-      const archivo = imagenInput.files[0];
-
-      if (!placa || !valor || !dueno || !modelo || !oficial || !razon || !archivo) {
-        alert("Por favor completa todos los campos.");
-        return;
-      }
-
-      const lector = new FileReader();
-      lector.onload = function (e) {
-        const nuevaMulta = {
-          placa,
-          valor,
-          dueno,
-          modelo,
-          oficial,
-          razon,
-          imagen: e.target.result
-        };
-        multas.push(nuevaMulta);
-        localStorage.setItem('multas', JSON.stringify(multas));
-        cerrarPanel();
-        alert("Multa registrada correctamente.");
+    const lector = new FileReader();
+    lector.onload = function(e) {
+      const nuevaMulta = {
+        placa,
+        valor,
+        dueno,
+        modelo,
+        oficial,
+        razon,
+        imagen: e.target.result // base64
       };
-      lector.readAsDataURL(archivo);
-    }
-  </script>
+
+      multas.push(nuevaMulta);
+      localStorage.setItem('multas', JSON.stringify(multas));
+      alert("Multa subida correctamente");
+      document.getElementById("panelMulta").style.display = "none";
+      document.getElementById("panelMulta").reset();
+    };
+
+    lector.readAsDataURL(imagenInput.files[0]);
+  }
+
+  function cerrarPanel() {
+    document.getElementById("panelMulta").style.display = "none";
+  }
+</script>
+
 </body>
 </html>
